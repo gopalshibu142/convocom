@@ -14,15 +14,22 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   var obsecure = true;
   double oplvl = 0.0;
   var showlogin = false;
+  Alignment titlealign = Alignment.center;
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 1), (() {
+    Future.delayed(Duration(seconds: 2), (() {
+      setState(() {
+        titlealign = Alignment.topCenter;
+      });
+      Future.delayed(Duration(seconds: 1), (() {
       setState(() {
         oplvl = 1.0;
       });
     }));
+    }));
+     
   }
 
   @override
@@ -35,9 +42,10 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         child: SafeArea(
             child: Stack(
           children: [
-            Container(
-              padding: EdgeInsets.only(top: 50),
-              alignment: Alignment.topCenter,
+            AnimatedContainer(
+              duration: Duration(milliseconds: 1000),
+              padding: EdgeInsets.only(top: 90),
+              alignment: titlealign,
               child: Text("CONVOCOM",
                   style: GoogleFonts.permanentMarker(
                       color: Colors.white, fontSize: 38)),
@@ -78,14 +86,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       ]),
                   child: Container(
                     padding: EdgeInsets.only(
-                        top: 20, left: 35, right: 35, bottom: 20),
+                        top: 30, left: 35, right: 35, bottom: 20),
                     alignment: Alignment.center,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           "Login",
-                          style: GoogleFonts.pacifico(
+                          style: GoogleFonts.robotoFlex(
                               color: Colors.white, fontSize: 28),
                         ),
                         SizedBox(

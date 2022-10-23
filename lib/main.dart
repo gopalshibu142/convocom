@@ -20,6 +20,7 @@ class _MyappState extends State<Myapp> {
       debugShowCheckedModeBanner: false,
       title: "convocom : let's blaber",
       home: Login(),
+      theme: ThemeData.dark(),
     );
   }
 }
