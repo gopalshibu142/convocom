@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 class UI {
   var backgrounds = ['assets/bg1.json', 'assets/bg2.json', 'assets/bg3.json'];
