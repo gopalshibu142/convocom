@@ -4,7 +4,7 @@ import 'package:animated_background/animated_background.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:animations/animations.dart';
-//import 'signup.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:lottie/lottie.dart';
 
@@ -18,6 +18,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> with TickerProviderStateMixin {
+  LoginDetails logindetails = new LoginDetails();
+
   late FlipCardController flipcontroller;
   var obsecure = true;
   var titleop = 1.0;
@@ -50,7 +52,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         child: Stack(
           children: [
             Container(
-                height: double.infinity,
+                //height: double.infinity,
+                width: double.infinity,
                 child: Lottie.asset(gui.background, fit: BoxFit.fitHeight)),
             AnimatedOpacity(
               opacity: titleop,
@@ -59,19 +62,23 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 duration: Duration(milliseconds: 1000),
                 padding: EdgeInsets.only(top: 90),
                 alignment: titlealign,
-                child: Text("CONVOCOM",
-                    style: GoogleFonts.permanentMarker(
-                        color: Colors.white, fontSize: 38)),
+                child: TextButton(
+                  onPressed: () => setState(() {
+                    gui.changeBG();
+                    debugPrint(gui.background);
+                  }),
+                  child: Text("CONVOCOM",
+                      style: GoogleFonts.permanentMarker(
+                          color: gui.clrlog, fontSize: 38)),
+                ),
               ),
             ),
             Container(
               alignment: Alignment.bottomCenter,
               child: FlipCard(
-                flipOnTouch: false,
+                  flipOnTouch: false,
                   onFlip: () {
-                    setState(() {
-                      titleop == 1.0 ? titleop = 0.0 : titleop = 1.0;
-                    });
+                    
                   },
                   controller: flipcontroller,
                   front: loginPage(),
@@ -94,7 +101,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         child: GlassmorphicContainer(
           width: 350,
           height: 450,
-          borderRadius: 3,
+          borderRadius: 20,
           linearGradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -130,33 +137,34 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 Text(
                   "Login",
                   style:
-                      GoogleFonts.robotoFlex(color: Colors.white, fontSize: 28),
+                      GoogleFonts.robotoFlex(color: gui.clrlog, fontSize: 28),
                 ),
                 SizedBox(
                   height: 50,
                 ),
                 TextFormField(
-                  style: GoogleFonts.roboto(color: Colors.white),
+                  controller: logindetails.loginemail.control,
+                  style: GoogleFonts.roboto(color: gui.clrlog),
                   decoration: InputDecoration(
-                      hintStyle: TextStyle(color: Colors.white60),
+                      hintStyle: TextStyle(color: gui.clrlog),
                       hintText: "Enter your email",
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white,
+                          color: gui.clrlog,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(15)),
                       ),
                       labelText: "email",
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(color: gui.clrlog),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white60,
+                          color: gui.clrlog,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(15)),
                       ),
-                      fillColor: Colors.white),
+                      fillColor: gui.clrlog),
                 ),
                 SizedBox(
                   height: 40,
@@ -164,7 +172,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 TextFormField(
                   obscureText: obsecure,
                   obscuringCharacter: 'o',
-                  style: GoogleFonts.roboto(color: Colors.white),
+                  style: GoogleFonts.roboto(color: gui.clrlog),
                   decoration: InputDecoration(
                     suffixIcon: IconButton(
                       onPressed: () => setState(() {
@@ -180,12 +188,12 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                               color: Colors.red,
                             ),
                     ),
-                    hintStyle: TextStyle(color: Colors.white60),
+                    hintStyle: TextStyle(color: gui.clrlog),
                     hintText: "Enter your password",
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                       borderSide: BorderSide(
-                        color: Colors.white,
+                        color: gui.clrlog,
                         width: 2.0,
                       ),
                     ),
@@ -193,14 +201,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         borderRadius: BorderRadius.all(Radius.circular(15))),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Colors.white60,
+                        color: gui.clrlog,
                         width: 2.0,
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                     ),
-                    fillColor: Colors.white,
+                    fillColor: gui.clrlog,
                     labelText: "Password",
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(color: gui.clrlog),
                   ),
                 ),
                 SizedBox(
@@ -218,9 +226,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       onPressed: () {},
                       child: Text("Login"),
                       style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
+                          foregroundColor: gui.clrlog,
                           side: BorderSide(
-                            color: Colors.white,
+                            color: gui.clrlog,
                           )),
                     )
                   ],
@@ -233,11 +241,15 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   children: [
                     Text(
                       "new here? ",
-                      style: GoogleFonts.robotoFlex(color: Colors.white70),
+                      style: GoogleFonts.robotoFlex(color: gui.clrlog),
                     ),
                     Container(
                       child: TextButton(
                         onPressed: () {
+                          setState(() {
+                            titleop = 0.0;
+                          });
+                          
                           flipcontroller.toggleCard();
                         },
                         child: Text(
@@ -298,61 +310,61 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 Text(
                   "Sign up",
                   style:
-                      GoogleFonts.robotoFlex(color: Colors.white, fontSize: 28),
+                      GoogleFonts.robotoFlex(color: gui.clrlog, fontSize: 28),
                 ),
                 SizedBox(
                   height: 30,
                 ),
                 TextFormField(
                   keyboardType: TextInputType.name,
-                  style: GoogleFonts.roboto(color: Colors.white),
+                  style: GoogleFonts.roboto(color: gui.clrlog),
                   decoration: InputDecoration(
-                      hintStyle: TextStyle(color: Colors.white60),
+                      hintStyle: TextStyle(color: gui.clrlog),
                       hintText: "Enter your fullname",
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white,
+                          color: gui.clrlog,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(15)),
                       ),
                       labelText: "name",
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(color: gui.clrlog),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white60,
+                          color: gui.clrlog,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(15)),
                       ),
-                      fillColor: Colors.white),
+                      fillColor: gui.clrlog),
                 ),
                 SizedBox(
                   height: 25,
                 ),
                 TextFormField(
                   keyboardType: TextInputType.emailAddress,
-                  style: GoogleFonts.roboto(color: Colors.white),
+                  style: GoogleFonts.roboto(color: gui.clrlog),
                   decoration: InputDecoration(
-                      hintStyle: TextStyle(color: Colors.white60),
+                      hintStyle: TextStyle(color: gui.clrlog),
                       hintText: "Enter your email",
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white,
+                          color: gui.clrlog,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(15)),
                       ),
                       labelText: "email",
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(color: gui.clrlog),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white60,
+                          color: gui.clrlog,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(15)),
                       ),
-                      fillColor: Colors.white),
+                      fillColor: gui.clrlog),
                 ),
                 SizedBox(
                   height: 25,
@@ -361,13 +373,13 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: obsecure,
                   obscuringCharacter: '#',
-                  style: GoogleFonts.roboto(color: Colors.white),
+                  style: GoogleFonts.roboto(color: gui.clrlog),
                   decoration: InputDecoration(
                     suffixIcon: IconButton(
                       onPressed: () => setState(() {
                         obsecure = !obsecure;
                       }),
-                      icon: !obsecure
+                      icon: obsecure
                           ? Icon(
                               Icons.visibility,
                               color: Colors.green,
@@ -377,12 +389,12 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                               color: Colors.red,
                             ),
                     ),
-                    hintStyle: TextStyle(color: Colors.white60),
+                    hintStyle: TextStyle(color: gui.clrlog),
                     hintText: "Enter your password",
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                       borderSide: BorderSide(
-                        color: Colors.white,
+                        color: gui.clrlog,
                         width: 2.0,
                       ),
                     ),
@@ -390,42 +402,123 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         borderRadius: BorderRadius.all(Radius.circular(15))),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Colors.white60,
+                        color: gui.clrlog,
                         width: 2.0,
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                     ),
-                    fillColor: Colors.white,
+                    fillColor: gui.clrlog,
                     labelText: "Password",
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(color: gui.clrlog),
                   ),
                 ),
                 SizedBox(
                   height: 25,
                 ),
-                 TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  style: GoogleFonts.roboto(color: Colors.white),
+                TextFormField(
+                  keyboardType: TextInputType.phone,
+                  style: GoogleFonts.roboto(color: gui.clrlog),
                   decoration: InputDecoration(
-                      hintStyle: TextStyle(color: Colors.white60),
+                      hintStyle: TextStyle(color: gui.clrlog),
                       hintText: "Enter your phone number",
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white,
+                          color: gui.clrlog,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(15)),
                       ),
                       labelText: "phone",
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(color: gui.clrlog),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white60,
+                          color: gui.clrlog,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(15)),
                       ),
-                      fillColor: Colors.white),
+                      fillColor: gui.clrlog),
+                ),
+                SizedBox(
+                  height: 25,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: 150,
+                      child: DateTimePicker(
+                        style: GoogleFonts.roboto(color: gui.clrlog),
+                        initialDatePickerMode: DatePickerMode.year,
+                        controller: logindetails.dob,
+                        decoration: InputDecoration(
+                            hintStyle: TextStyle(color: gui.clrlog),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: gui.clrlog,
+                                width: 2.0,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15)),
+                            ),
+                            labelText: "date of birth",
+                            labelStyle: TextStyle(color: gui.clrlog),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: gui.clrlog,
+                                width: 2.0,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15)),
+                            ),
+                            fillColor: gui.clrlog),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2100),
+                        dateLabelText: 'Date',
+                        onChanged: (value) {
+                          var dobyear =
+                              DateTime.parse(logindetails.dob.text).year;
+                          var age = DateTime.now().year - dobyear;
+                          setState(() {
+                            debugPrint(age.toString());
+                            logindetails.age.control.text = age.toString();
+                          });
+                        },
+                      ),
+                    ),
+                    Text(
+                      'Age :',
+                      style: TextStyle(color: gui.clrlog),
+                    ),
+                    Container(
+                      width: 60,
+                      child: TextField(
+                        controller: logindetails.age.control,
+                        readOnly: true,
+                        style: GoogleFonts.roboto(color: gui.clrlog),
+                        decoration: InputDecoration(
+                            hintStyle: TextStyle(color: gui.clrlog),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: gui.clrlog,
+                                width: 2.0,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15)),
+                            ),
+                            labelStyle: TextStyle(color: gui.clrlog),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: gui.clrlog,
+                                width: 2.0,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15)),
+                            ),
+                            fillColor: gui.clrlog),
+                      ),
+                    )
+                  ],
                 ),
                 SizedBox(
                   height: 25,
@@ -435,16 +528,22 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   children: [
                     TextButton(
                         onPressed: () {
+                           setState(() {
+                          titleop = 1.0;
+                        });
                           flipcontroller.toggleCard();
                         },
                         child: Text("cancel")),
                     OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                       
+                        
+                      },
                       child: Text("Signup"),
                       style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
+                          foregroundColor: gui.clrlog,
                           side: BorderSide(
-                            color: Colors.white,
+                            color: gui.clrlog,
                           )),
                     )
                   ],
