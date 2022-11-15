@@ -7,6 +7,7 @@ import 'package:animations/animations.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:lottie/lottie.dart';
+import 'package:rive/rive.dart' as rive;
 
 import 'package:convocom/global.dart';
 
@@ -52,9 +53,22 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         child: Stack(
           children: [
             Container(
-                //height: double.infinity,
-                width: double.infinity,
-                child: Lottie.asset(gui.background, fit: BoxFit.fitHeight)),
+              color: Colors.black,
+              child: Container(
+                  //height: double.infinity,
+                  width: double.infinity,
+                  child: Container(
+                      alignment: Alignment.center,
+                      child: (MediaQuery.of(context).size.height) /
+                                  (MediaQuery.of(context).size.width) >
+                              1
+                          ? Lottie.asset(gui.background, fit: BoxFit.contain)
+                          : Container(
+                              alignment: Alignment.center,
+                              height: double.infinity,
+                              child:
+                                  rive.RiveAnimation.asset('assets/bg5.riv')))),
+            ),
             AnimatedOpacity(
               opacity: titleop,
               duration: Duration(milliseconds: 500),
@@ -77,9 +91,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               alignment: Alignment.bottomCenter,
               child: FlipCard(
                   flipOnTouch: false,
-                  onFlip: () {
-                    
-                  },
+                  onFlip: () {},
                   controller: flipcontroller,
                   front: loginPage(),
                   back: signupPage()),
@@ -249,7 +261,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                           setState(() {
                             titleop = 0.0;
                           });
-                          
+
                           flipcontroller.toggleCard();
                         },
                         child: Text(
@@ -528,17 +540,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   children: [
                     TextButton(
                         onPressed: () {
-                           setState(() {
-                          titleop = 1.0;
-                        });
+                          setState(() {
+                            titleop = 1.0;
+                          });
                           flipcontroller.toggleCard();
                         },
                         child: Text("cancel")),
                     OutlinedButton(
-                      onPressed: () {
-                       
-                        
-                      },
+                      onPressed: () {},
                       child: Text("Signup"),
                       style: OutlinedButton.styleFrom(
                           foregroundColor: gui.clrlog,
