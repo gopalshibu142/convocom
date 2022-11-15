@@ -10,6 +10,7 @@ import 'package:lottie/lottie.dart';
 import 'package:rive/rive.dart' as rive;
 
 import 'package:convocom/global.dart';
+import 'package:convocom/firebase/firefn.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -32,7 +33,17 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     gui = UI();
+    // gui.clrlog = Colors.white;
+
+    Future.delayed(Duration(milliseconds: 1), () {
+      setState(() {
+        if ((MediaQuery.of(context).size.height) /
+                (MediaQuery.of(context).size.width) <
+            1) gui.clrlog = Colors.white;
+      });
+    });
     flipcontroller = FlipCardController();
+
     Future.delayed(Duration(seconds: 2), (() {
       setState(() {
         titlealign = Alignment.topCenter;
@@ -62,12 +73,12 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       child: (MediaQuery.of(context).size.height) /
                                   (MediaQuery.of(context).size.width) >
                               1
-                          ? Lottie.asset(gui.background, fit: BoxFit.contain)
+                          ? Lottie.asset(gui.background, fit: BoxFit.scaleDown)
                           : Container(
                               alignment: Alignment.center,
                               height: double.infinity,
-                              child:
-                                  rive.RiveAnimation.asset('assets/bg5.riv')))),
+                              child: rive.RiveAnimation.asset(
+                                  'assets/bgwide.riv')))),
             ),
             AnimatedOpacity(
               opacity: titleop,
@@ -428,6 +439,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   height: 25,
                 ),
                 TextFormField(
+                  controller: logindetails.phone.control,
                   keyboardType: TextInputType.phone,
                   style: GoogleFonts.roboto(color: gui.clrlog),
                   decoration: InputDecoration(
@@ -547,7 +559,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         },
                         child: Text("cancel")),
                     OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        verifyPhone(logindetails.phone.control);
+                      },
                       child: Text("Signup"),
                       style: OutlinedButton.styleFrom(
                           foregroundColor: gui.clrlog,

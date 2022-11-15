@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'screens/loginpage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 
 void main() {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   runApp(Myapp());
 }
 
