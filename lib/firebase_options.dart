@@ -50,6 +50,7 @@ class DefaultFirebaseOptions {
     projectId: 'convocomdb',
     authDomain: 'convocomdb.firebaseapp.com',
     storageBucket: 'convocomdb.appspot.com',
+    measurementId: 'G-21Q8PH8HB3',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
