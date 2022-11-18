@@ -47,13 +47,14 @@ dependencies:
   date_time_picker: ^2.1.0
   
   firebase_core: ^2.2.0
-  firebase_messaging: ^14.1.0
+  
   firebase_storage: ^11.0.5
   firebase_database: ^10.0.5
   firebase_auth: ^4.1.2
   cloud_firestore: ^4.0.5
   rive: ^0.9.1
   sms_autofill: ^2.2.0
+  firebase_messaging: ^14.1.1
 
 dev_dependencies:
   flutter_test:
