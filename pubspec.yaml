@@ -54,7 +54,7 @@ dependencies:
   cloud_firestore: ^4.0.5
   rive: ^0.9.1
   sms_autofill: ^2.2.0
-  firebase_messaging: ^14.1.1
+  firebase_messaging: ^14.0.3
 
 dev_dependencies:
   flutter_test:
