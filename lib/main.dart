@@ -4,10 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-void main() async{
+void main() {
+  initFire();
+  runApp(Myapp());
+}
+
+void initFire() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(Myapp());
 }
 
 class Myapp extends StatefulWidget {
