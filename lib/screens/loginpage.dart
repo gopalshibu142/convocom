@@ -7,10 +7,8 @@ import 'package:animations/animations.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:lottie/lottie.dart';
-import 'package:rive/rive.dart' as rive;
 
 import 'package:convocom/global.dart';
-import 'package:convocom/firebase/firefn.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -33,17 +31,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     gui = UI();
-    // gui.clrlog = Colors.white;
-
-    Future.delayed(Duration(milliseconds: 1), () {
-      setState(() {
-        if ((MediaQuery.of(context).size.height) /
-                (MediaQuery.of(context).size.width) <
-            1) gui.clrlog = Colors.white;
-      });
-    });
     flipcontroller = FlipCardController();
-
     Future.delayed(Duration(seconds: 2), (() {
       setState(() {
         titlealign = Alignment.topCenter;
@@ -51,7 +39,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       Future.delayed(Duration(seconds: 1), (() {
         setState(() {
           oplvl = 1.0;
-          var abv;
         });
       }));
     }));
@@ -65,22 +52,10 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         child: Stack(
           children: [
             Container(
-              color: Colors.black,
-              child: Container(
-                  //height: double.infinity,
-                  width: double.infinity,
-                  child: Container(
-                      alignment: Alignment.center,
-                      child: (MediaQuery.of(context).size.height) /
-                                  (MediaQuery.of(context).size.width) >
-                              1
-                          ? Lottie.asset(gui.background, fit: BoxFit.scaleDown)
-                          : Container(
-                              alignment: Alignment.center,
-                              height: double.infinity,
-                              child: rive.RiveAnimation.asset(
-                                  'assets/bgwide.riv')))),
-            ),
+                //height: double.infinity,
+                width: double.infinity,
+                height: double.infinity,
+                child: Lottie.asset(gui.background, fit: BoxFit.fill)),
             AnimatedOpacity(
               opacity: titleop,
               duration: Duration(milliseconds: 500),
@@ -103,7 +78,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               alignment: Alignment.bottomCenter,
               child: FlipCard(
                   flipOnTouch: false,
-                  onFlip: () {},
+                  onFlip: () {
+                    
+                  },
                   controller: flipcontroller,
                   front: loginPage(),
                   back: signupPage()),
@@ -273,7 +250,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                           setState(() {
                             titleop = 0.0;
                           });
-
+                          
                           flipcontroller.toggleCard();
                         },
                         child: Text(
@@ -440,7 +417,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   height: 25,
                 ),
                 TextFormField(
-                  controller: logindetails.phone.control,
                   keyboardType: TextInputType.phone,
                   style: GoogleFonts.roboto(color: gui.clrlog),
                   decoration: InputDecoration(
@@ -553,15 +529,16 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   children: [
                     TextButton(
                         onPressed: () {
-                          setState(() {
-                            titleop = 1.0;
-                          });
+                           setState(() {
+                          titleop = 1.0;
+                        });
                           flipcontroller.toggleCard();
                         },
                         child: Text("cancel")),
                     OutlinedButton(
                       onPressed: () {
-                        verifyPhone(logindetails.phone.control);
+                       
+                        
                       },
                       child: Text("Signup"),
                       style: OutlinedButton.styleFrom(

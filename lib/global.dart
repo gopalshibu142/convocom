@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-
 class UI {
   var backgrounds = ['assets/bg1.json', 'assets/bg2.json', 'assets/bg3.json'];
   //var colorlogin = [Colors.white, Colors.black];
