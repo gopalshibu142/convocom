@@ -1,6 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'screens/Home.dart';
 
 class UI {
   var backgrounds = ['assets/bg1.json', 'assets/bg2.json', 'assets/bg3.json'];
@@ -37,6 +40,7 @@ class LoginDetails {
     phone = TextControl();
     dob = TextEditingController(text: " ");
     age = TextControl();
+    code = TextEditingController();
   }
   late TextControl loginemail;
   late TextControl loginpass;
@@ -46,6 +50,7 @@ class LoginDetails {
   late TextControl pass;
   late TextControl phone;
   late TextEditingController dob;
+  late TextEditingController code;
   late TextControl age;
 
   void validSignin() {}
@@ -58,4 +63,66 @@ class TextControl {
   }
   late TextEditingController control;
   late bool validator;
+}
+
+Future registerUser(LoginDetails user, BuildContext context) async {
+ // var _credential;
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  var smsCode;
+  _auth.verifyPhoneNumber(
+      phoneNumber: user.phone.control.text,
+      timeout: Duration(seconds: 60),
+      verificationCompleted: (AuthCredential authCredential) {
+        _auth.signInWithCredential(authCredential).then((UserCredential result) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => Home()));
+        }).catchError((e) {
+          print(e);
+        });
+      },
+      verificationFailed: (FirebaseAuthException authException) {
+        print(authException.message);
+      },
+      codeSent: (String verificationId, int? forceResendingToken) {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
+                  title: Text("Enter SMS Code"),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      TextField(
+                        controller: user.code,
+                      ),
+                    ],
+                  ),
+                  actions: <Widget>[
+                    ElevatedButton(
+                      child: Text("Done"),
+                      onPressed: () async{
+                        AuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: user.code.text);
+
+                      UserCredential result = await _auth.signInWithCredential(credential);
+
+                      User? userauth = result.user;
+
+                      if(userauth != null){
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => Home()
+                        ));
+                      }else{
+                        print("Error");
+                      }
+                      },
+                    )
+                  ],
+                ));
+        //show dialog to take input from the user
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        verificationId = verificationId;
+        print(verificationId);
+        print("Timout");
+      });
 }

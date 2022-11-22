@@ -78,9 +78,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               alignment: Alignment.bottomCenter,
               child: FlipCard(
                   flipOnTouch: false,
-                  onFlip: () {
-                    
-                  },
+                  onFlip: () {},
                   controller: flipcontroller,
                   front: loginPage(),
                   back: signupPage()),
@@ -250,7 +248,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                           setState(() {
                             titleop = 0.0;
                           });
-                          
+
                           flipcontroller.toggleCard();
                         },
                         child: Text(
@@ -529,16 +527,15 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   children: [
                     TextButton(
                         onPressed: () {
-                           setState(() {
-                          titleop = 1.0;
-                        });
+                          setState(() {
+                            titleop = 1.0;
+                          });
                           flipcontroller.toggleCard();
                         },
                         child: Text("cancel")),
                     OutlinedButton(
                       onPressed: () {
-                       
-                        
+                        registerUser(logindetails, context);
                       },
                       child: Text("Signup"),
                       style: OutlinedButton.styleFrom(
