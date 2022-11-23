@@ -50,6 +50,7 @@ dependencies:
   cloud_firestore: ^4.1.0
   database: ^0.3.3
   firebase_messaging: ^14.1.1
+ # firebase_messaging: ^14.1.1
 
 dev_dependencies:
   flutter_test:
