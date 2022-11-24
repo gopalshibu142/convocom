@@ -1,9 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'screens/loginpage.dart';
-import 'package:firebase_core/firebase_core.dart';
-
+//import 'package:firebase_core/firebase_core.dart';
 
 void main() {
+  Firebase.initializeApp();
   runApp(Myapp());
 }
 

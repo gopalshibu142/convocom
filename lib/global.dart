@@ -65,64 +65,95 @@ class TextControl {
   late bool validator;
 }
 
-Future registerUser(LoginDetails user, BuildContext context) async {
- // var _credential;
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  var smsCode;
-  _auth.verifyPhoneNumber(
-      phoneNumber: user.phone.control.text,
-      timeout: Duration(seconds: 60),
-      verificationCompleted: (AuthCredential authCredential) {
-        _auth.signInWithCredential(authCredential).then((UserCredential result) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => Home()));
-        }).catchError((e) {
-          print(e);
-        });
-      },
-      verificationFailed: (FirebaseAuthException authException) {
-        print(authException.message);
-      },
-      codeSent: (String verificationId, int? forceResendingToken) {
-        showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => AlertDialog(
-                  title: Text("Enter SMS Code"),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      TextField(
-                        controller: user.code,
-                      ),
-                    ],
-                  ),
-                  actions: <Widget>[
-                    ElevatedButton(
-                      child: Text("Done"),
-                      onPressed: () async{
-                        AuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: user.code.text);
+// Future registerUser(LoginDetails user, BuildContext context) async {
+//  // var _credential;
+//   FirebaseAuth _auth = FirebaseAuth.instance;
+//   var smsCode;
+//   _auth.verifyPhoneNumber(
+//       phoneNumber: user.phone.control.text,
+//       timeout: Duration(seconds: 60),
+//       verificationCompleted: (AuthCredential authCredential) {
+//         _auth.signInWithCredential(authCredential).then((UserCredential result) {
+//           Navigator.pushReplacement(
+//               context, MaterialPageRoute(builder: (context) => Home()));
+//         }).catchError((e) {
+//           print(e);
+//         });
+//       },
+//       verificationFailed: (FirebaseAuthException authException) {
+//         print(authException.message);
+//       },
+//       codeSent: (String verificationId, int? forceResendingToken) {
+//         showDialog(
+//             context: context,
+//             barrierDismissible: false,
+//             builder: (context) => AlertDialog(
+//                   title: Text("Enter SMS Code"),
+//                   content: Column(
+//                     mainAxisSize: MainAxisSize.min,
+//                     children: <Widget>[
+//                       TextField(
+//                         controller: user.code,
+//                       ),
+//                     ],
+//                   ),
+//                   actions: <Widget>[
+//                     ElevatedButton(
+//                       child: Text("Done"),
+//                       onPressed: () async{
+//                       //   AuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: user.code.text);
 
-                      UserCredential result = await _auth.signInWithCredential(credential);
+//                       // UserCredential result = await _auth.signInWithCredential(credential);
 
-                      User? userauth = result.user;
+//                       // User? userauth = result.user;
 
-                      if(userauth != null){
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => Home()
-                        ));
-                      }else{
-                        print("Error");
-                      }
-                      },
-                    )
-                  ],
-                ));
-        //show dialog to take input from the user
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {
-        verificationId = verificationId;
-        print(verificationId);
-        print("Timout");
-      });
+//                       // if(userauth != null){
+//                       //   Navigator.push(context, MaterialPageRoute(
+//                       //       builder: (context) => Home()
+//                       //   ));
+//                       // }else{
+//                       //   print("Error");
+//                       // }
+//                       },
+//                     )
+//                   ],
+//                 ));
+//         //show dialog to take input from the user
+//       },
+//       codeAutoRetrievalTimeout: (String verificationId) {
+//         verificationId = verificationId;
+//         print(verificationId);
+//         print("Timout");
+//       });
+// }
+class UserDetails {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool _success = false;
+  String _userEmail = '';
+  bool registered = false;
+
+  void register(
+      {required emailcontroller, required passwordcontroller}) async {
+    final User? user = (await _auth.createUserWithEmailAndPassword(
+      email: emailcontroller.text,
+      password: passwordcontroller.text,
+    ))
+        .user;
+  }
+
+  void signInWithEmailAndPassword(
+      {required emailcontroller, required passwordcontroller}) async {
+    final User? user = (await _auth.signInWithEmailAndPassword(
+      email: emailcontroller.text,
+      password: passwordcontroller.text,
+    ))
+        .user;
+
+    if (user != null) {
+      _success = true;
+      _userEmail = user.email.toString();
+    } else {
+      _success = false;
+    }
+  }
 }

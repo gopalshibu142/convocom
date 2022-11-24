@@ -19,6 +19,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> with TickerProviderStateMixin {
   LoginDetails logindetails = new LoginDetails();
+  late UserDetails user;
 
   late FlipCardController flipcontroller;
   var obsecure = true;
@@ -30,6 +31,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    user = UserDetails();
     gui = UI();
     flipcontroller = FlipCardController();
     Future.delayed(Duration(seconds: 2), (() {
@@ -535,7 +537,20 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         child: Text("cancel")),
                     OutlinedButton(
                       onPressed: () {
-                        registerUser(logindetails, context);
+                        user.register(
+                            emailcontroller: logindetails.email.control,
+                            passwordcontroller: logindetails.pass.control);
+                        if (user.registered) {
+                          var b = SnackBar(
+                            content: const Text('Success'),
+                            action: SnackBarAction(
+                              label: 'ok',
+                              onPressed: () {
+                                
+                              },
+                            ),
+                          );
+                        }
                       },
                       child: Text("Signup"),
                       style: OutlinedButton.styleFrom(
@@ -555,5 +570,10 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
