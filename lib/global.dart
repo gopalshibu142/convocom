@@ -126,8 +126,12 @@ class TextControl {
 //         print("Timout");
 //       });
 // }
+
+
 class UserDetails {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  late final FirebaseAuth _auth;
+  UserDetails() {
+    _auth = FirebaseAuth.instance;}
   bool success = false;
   String userEmail = '';
   bool registered = false;
@@ -155,8 +159,7 @@ class UserDetails {
     debugPrint("\n$registered\n");
   }
 
-  Future signInWithEmailAndPassword(
-      {required email, required password}) async {
+  Future signInWithEmailAndPassword({required email, required password}) async {
     final User? user = (await _auth.signInWithEmailAndPassword(
       email: email,
       password: password,
@@ -166,7 +169,6 @@ class UserDetails {
     if (user != null) {
       success = true;
       userEmail = user.email.toString();
-      
     } else {
       success = false;
     }

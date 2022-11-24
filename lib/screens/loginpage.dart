@@ -230,7 +230,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                             email: logindetails.loginemail.control.text,
                             password: logindetails.loginpass.control.text);
                         if (user.success) {
-                          Navigator.pushReplacementNamed(context, 'home');
+                          Navigator.pushReplacementNamed(context, '/home');
                         }
                       },
                       child: Text("Login"),
