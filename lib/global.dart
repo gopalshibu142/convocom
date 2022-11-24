@@ -128,32 +128,47 @@ class TextControl {
 // }
 class UserDetails {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  bool _success = false;
-  String _userEmail = '';
+  bool success = false;
+  String userEmail = '';
   bool registered = false;
+  var error = "failed";
+  Future register({required email, required password}) async {
+    try {
+      final credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      credential.user != null ? registered = true : registered = false;
+    } on FirebaseAuthException catch (e) {
+      error = e.toString();
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
+    //_auth.user == null ? registered = false : registered = true;
 
-  void register(
-      {required emailcontroller, required passwordcontroller}) async {
-    final User? user = (await _auth.createUserWithEmailAndPassword(
-      email: emailcontroller.text,
-      password: passwordcontroller.text,
-    ))
-        .user;
+    debugPrint("\n$registered\n");
   }
 
-  void signInWithEmailAndPassword(
-      {required emailcontroller, required passwordcontroller}) async {
+  Future signInWithEmailAndPassword(
+      {required email, required password}) async {
     final User? user = (await _auth.signInWithEmailAndPassword(
-      email: emailcontroller.text,
-      password: passwordcontroller.text,
+      email: email,
+      password: password,
     ))
         .user;
 
     if (user != null) {
-      _success = true;
-      _userEmail = user.email.toString();
+      success = true;
+      userEmail = user.email.toString();
+      
     } else {
-      _success = false;
+      success = false;
     }
   }
 }

@@ -171,8 +171,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   height: 40,
                 ),
                 TextFormField(
+                  controller: logindetails.loginpass.control,
                   obscureText: obsecure,
-                  obscuringCharacter: 'o',
+                  obscuringCharacter: '#',
                   style: GoogleFonts.roboto(color: gui.clrlog),
                   decoration: InputDecoration(
                     suffixIcon: IconButton(
@@ -224,7 +225,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         },
                         child: Text("forgot password?")),
                     OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        await user.signInWithEmailAndPassword(
+                            email: logindetails.loginemail.control.text,
+                            password: logindetails.loginpass.control.text);
+                        if (user.success) {
+                          Navigator.pushReplacementNamed(context, 'home');
+                        }
+                      },
                       child: Text("Login"),
                       style: OutlinedButton.styleFrom(
                           foregroundColor: gui.clrlog,
@@ -344,6 +352,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   height: 25,
                 ),
                 TextFormField(
+                  controller: logindetails.email.control,
                   keyboardType: TextInputType.emailAddress,
                   style: GoogleFonts.roboto(color: gui.clrlog),
                   decoration: InputDecoration(
@@ -371,6 +380,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   height: 25,
                 ),
                 TextFormField(
+                  controller: logindetails.pass.control,
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: obsecure,
                   obscuringCharacter: '#',
@@ -536,21 +546,29 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         },
                         child: Text("cancel")),
                     OutlinedButton(
-                      onPressed: () {
-                        user.register(
-                            emailcontroller: logindetails.email.control,
-                            passwordcontroller: logindetails.pass.control);
+                      onPressed: () async {
+                        var snackbar;
+                        await user.register(
+                            email: logindetails.email.control.text,
+                            password: logindetails.pass.control.text);
                         if (user.registered) {
-                          var b = SnackBar(
+                          snackbar = SnackBar(
                             content: const Text('Success'),
                             action: SnackBarAction(
                               label: 'ok',
-                              onPressed: () {
-                                
-                              },
+                              onPressed: () {},
+                            ),
+                          );
+                        } else {
+                          snackbar = SnackBar(
+                            content: Text(user.error),
+                            action: SnackBarAction(
+                              label: 'ok',
+                              onPressed: () {},
                             ),
                           );
                         }
+                        ScaffoldMessenger.of(context).showSnackBar(snackbar);
                       },
                       child: Text("Signup"),
                       style: OutlinedButton.styleFrom(
