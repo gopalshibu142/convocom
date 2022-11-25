@@ -225,7 +225,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   children: [
                     TextButton(
                         onPressed: () {
-                          print("🌛".toString());
+                          //print("🌛".toString());
                         },
                         child: Text("forgot password?")),
                     OutlinedButton(
@@ -233,9 +233,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         await user.signInWithEmailAndPassword(
                             email: logindetails.loginemail.control.text,
                             password: logindetails.loginpass.control.text);
-                        if (user.success) {
-                          Navigator.pushReplacementNamed(context, '/home');
-                        }
+                        
                       },
                       child: Text("Login"),
                       style: OutlinedButton.styleFrom(

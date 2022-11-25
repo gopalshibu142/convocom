@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'screens/Home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UI {
   var backgrounds = ['assets/bg1.json', 'assets/bg2.json', 'assets/bg3.json'];
@@ -65,72 +66,12 @@ class TextControl {
   late bool validator;
 }
 
-// Future registerUser(LoginDetails user, BuildContext context) async {
-//  // var _credential;
-//   FirebaseAuth _auth = FirebaseAuth.instance;
-//   var smsCode;
-//   _auth.verifyPhoneNumber(
-//       phoneNumber: user.phone.control.text,
-//       timeout: Duration(seconds: 60),
-//       verificationCompleted: (AuthCredential authCredential) {
-//         _auth.signInWithCredential(authCredential).then((UserCredential result) {
-//           Navigator.pushReplacement(
-//               context, MaterialPageRoute(builder: (context) => Home()));
-//         }).catchError((e) {
-//           print(e);
-//         });
-//       },
-//       verificationFailed: (FirebaseAuthException authException) {
-//         print(authException.message);
-//       },
-//       codeSent: (String verificationId, int? forceResendingToken) {
-//         showDialog(
-//             context: context,
-//             barrierDismissible: false,
-//             builder: (context) => AlertDialog(
-//                   title: Text("Enter SMS Code"),
-//                   content: Column(
-//                     mainAxisSize: MainAxisSize.min,
-//                     children: <Widget>[
-//                       TextField(
-//                         controller: user.code,
-//                       ),
-//                     ],
-//                   ),
-//                   actions: <Widget>[
-//                     ElevatedButton(
-//                       child: Text("Done"),
-//                       onPressed: () async{
-//                       //   AuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: user.code.text);
-
-//                       // UserCredential result = await _auth.signInWithCredential(credential);
-
-//                       // User? userauth = result.user;
-
-//                       // if(userauth != null){
-//                       //   Navigator.push(context, MaterialPageRoute(
-//                       //       builder: (context) => Home()
-//                       //   ));
-//                       // }else{
-//                       //   print("Error");
-//                       // }
-//                       },
-//                     )
-//                   ],
-//                 ));
-//         //show dialog to take input from the user
-//       },
-//       codeAutoRetrievalTimeout: (String verificationId) {
-//         verificationId = verificationId;
-//         print(verificationId);
-//         print("Timout");
-//       });
-// }
-
 class UserDetails {
+  late BuildContext context;
   late final FirebaseAuth _auth;
   UserDetails(context) {
     _auth = FirebaseAuth.instance;
+    this.context = context;
   }
 
   bool success = false;
@@ -162,23 +103,41 @@ class UserDetails {
   }
 
   Future signInWithEmailAndPassword({required email, required password}) async {
-    final User? user = (await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    ))
-        .user;
+    try {
+      final User? user = (await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      ))
+          .user;
 
-    if (user != null) {
-      success = true;
-      userEmail = user.email.toString();
-    } else {
-      success = false;
+      if (user != null) {
+        success = true;
+        userEmail = user.email.toString();
+        if (success) {
+           SharedPreferences prefs = await SharedPreferences.getInstance();
+           prefs.setBool('issignedin', true);
+          Navigator.pushReplacementNamed(context, '/home');
+        }
+      } else {
+        success = false;
+      }
+    } on FirebaseAuthException catch (e) {
+      error = e.toString();
+    } catch (e) {
+      print(e);
     }
   }
 
-  void signout(BuildContext context) {
+  void signout(BuildContext context) async{
     _auth.signOut();
     Navigator.pushReplacementNamed(context, '/');
+    Future.delayed(Duration(seconds: 1));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('issignedin', false);
+    showSnack("Signout successfull", context);
+  }
+
+  void showSnack(content, context) {
     var snackbar = SnackBar(
       content: const Text('Signed out successfully'),
       action: SnackBarAction(

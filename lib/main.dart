@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'screens/loginpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:firebase_core/firebase_core.dart';
 import 'screens/Home.dart';
 
@@ -22,10 +23,14 @@ class Myapp extends StatefulWidget {
 
 class _MyappState extends State<Myapp> {
   late UserDetails user;
+  late final prefs;
+  late bool signedin;
   @override
-  void initState() {
+  void initState() async {
     super.initState();
+    prefs = await SharedPreferences.getInstance();
     user = UserDetails(context);
+    signedin = prefs.containsKey("issignedin");
   }
 
   @override
@@ -37,9 +42,13 @@ class _MyappState extends State<Myapp> {
       initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
-        '/': (context) => Login(user: user,),
+        '/': (context) => Login(
+              user: user,
+            ),
         // When navigating to the "/second" route, build the SecondScreen widget.
-        '/home': (context) => Home(user: user,),
+        '/home': (context) => Home(
+              user: user,
+            ),
       },
     );
   }
