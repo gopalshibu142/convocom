@@ -3,28 +3,37 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:convocom/global.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  late UserDetails user;
+  Home({super.key, required UserDetails user}) {
+    this.user = user;
+  }
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Home> createState() => _HomeState(user);
 }
 
 class _HomeState extends State<Home> {
-  late final FirebaseAuth _auth;
+  late UserDetails user;
   @override
   var usermail;
+  _HomeState(user) {
+    this.user = user;
+  }
   void initState() {
     super.initState();
-    _auth = FirebaseAuth.instance;
-    usermail = _auth.currentUser?.email?? " ";
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          //leading: IconButton(),
-          ),
+        leading: IconButton(
+          icon: Icon(Icons.person),
+          onPressed: () {
+            user.signout(context);
+          },
+        ),
+      ),
       body: Center(
         child: Container(
           color: Colors.black45,

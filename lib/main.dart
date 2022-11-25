@@ -1,13 +1,15 @@
+import 'package:convocom/global.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'screens/loginpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:firebase_core/firebase_core.dart';
 import 'screens/Home.dart';
-void main() async{
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
- //FirebaseAppCheck.instance.useEmulator("10.0.2.2", 9099);
+  //FirebaseAppCheck.instance.useEmulator("10.0.2.2", 9099);
   runApp(Myapp());
 }
 
@@ -19,6 +21,13 @@ class Myapp extends StatefulWidget {
 }
 
 class _MyappState extends State<Myapp> {
+  late UserDetails user;
+  @override
+  void initState() {
+    super.initState();
+    user = UserDetails(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,9 +37,9 @@ class _MyappState extends State<Myapp> {
       initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
-        '/': (context) => const Login(),
+        '/': (context) => Login(user: user,),
         // When navigating to the "/second" route, build the SecondScreen widget.
-        '/home': (context) => const Home(),
+        '/home': (context) => Home(user: user,),
       },
     );
   }

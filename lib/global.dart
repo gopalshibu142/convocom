@@ -127,15 +127,17 @@ class TextControl {
 //       });
 // }
 
-
 class UserDetails {
   late final FirebaseAuth _auth;
-  UserDetails() {
-    _auth = FirebaseAuth.instance;}
+  UserDetails(context) {
+    _auth = FirebaseAuth.instance;
+  }
+
   bool success = false;
   String userEmail = '';
   bool registered = false;
   var error = "failed";
+
   Future register({required email, required password}) async {
     try {
       final credential =
@@ -172,5 +174,18 @@ class UserDetails {
     } else {
       success = false;
     }
+  }
+
+  void signout(BuildContext context) {
+    _auth.signOut();
+    Navigator.pushReplacementNamed(context, '/');
+    var snackbar = SnackBar(
+      content: const Text('Signed out successfully'),
+      action: SnackBarAction(
+        label: 'ok',
+        onPressed: () {},
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 }

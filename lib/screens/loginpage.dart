@@ -11,16 +11,21 @@ import 'package:lottie/lottie.dart';
 import 'package:convocom/global.dart';
 
 class Login extends StatefulWidget {
-  const Login({super.key});
+  late UserDetails user;
+  Login({super.key, required UserDetails user}) {
+    this.user = user;
+  }
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Login> createState() => _LoginState(user);
 }
 
 class _LoginState extends State<Login> with TickerProviderStateMixin {
   LoginDetails logindetails = new LoginDetails();
   late UserDetails user;
-
+  _LoginState(user) {
+    this.user = user;
+  }
   late FlipCardController flipcontroller;
   var obsecure = true;
   var titleop = 1.0;
@@ -31,7 +36,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    user = UserDetails();
     gui = UI();
     flipcontroller = FlipCardController();
     Future.delayed(Duration(seconds: 2), (() {
