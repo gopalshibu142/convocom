@@ -5,6 +5,7 @@ import 'screens/loginpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:firebase_core/firebase_core.dart';
+import 'screens/splash.dart';
 import 'screens/Home.dart';
 
 void main() async {
@@ -15,22 +16,33 @@ void main() async {
 }
 
 class Myapp extends StatefulWidget {
-  const Myapp({super.key});
-
+  Myapp({super.key}) {
+   
+  }
+  late final prefs;
+  late bool signedin;
+  late String root;
+  
   @override
   State<Myapp> createState() => _MyappState();
 }
 
 class _MyappState extends State<Myapp> {
   late UserDetails user;
-  late final prefs;
+  var prefs;
   late bool signedin;
+  
+  _MyappState() {}
   @override
-  void initState() async {
+  void initState() {
     super.initState();
-    prefs = await SharedPreferences.getInstance();
-    user = UserDetails(context);
-    signedin = prefs.containsKey("issignedin");
+    Future.delayed(Duration(microseconds: 1)).then((value) async {
+      prefs = SharedPreferences.getInstance();
+      signedin =
+          prefs.containsKey("issignedin") ? prefs.getBool('issignedin') : false;
+    });
+    //initShared();
+    user = UserDetails();
   }
 
   @override
@@ -42,9 +54,8 @@ class _MyappState extends State<Myapp> {
       initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
-        '/': (context) => Login(
-              user: user,
-            ),
+        '/': (context) => SplashFuturePage(),
+        '/login':(context) => Login(user: user),
         // When navigating to the "/second" route, build the SecondScreen widget.
         '/home': (context) => Home(
               user: user,

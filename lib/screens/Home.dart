@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:convocom/global.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
   late UserDetails user;
@@ -37,7 +38,7 @@ class _HomeState extends State<Home> {
       body: Center(
         child: Container(
           color: Colors.black45,
-          child: Text("${usermail}"),
+          child: Text("${user.auth.currentUser}"),
         ),
       ),
     );

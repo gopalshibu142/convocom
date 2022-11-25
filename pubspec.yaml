@@ -50,6 +50,7 @@ dependencies:
   cloud_firestore: ^4.1.0
   database: ^0.3.3
   shared_preferences: ^2.0.15
+  easy_splash_screen: ^1.0.4
   # firebase_messaging: ^14.1.1
  # firebase_messaging: ^14.1.1
 

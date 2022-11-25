@@ -67,11 +67,11 @@ class TextControl {
 }
 
 class UserDetails {
-  late BuildContext context;
-  late final FirebaseAuth _auth;
-  UserDetails(context) {
-    _auth = FirebaseAuth.instance;
-    this.context = context;
+  // late BuildContext context;
+  late final FirebaseAuth auth;
+  UserDetails() {
+    auth = FirebaseAuth.instance;
+    // this.context = context;
   }
 
   bool success = false;
@@ -82,7 +82,7 @@ class UserDetails {
   Future register({required email, required password}) async {
     try {
       final credential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -102,9 +102,10 @@ class UserDetails {
     debugPrint("\n$registered\n");
   }
 
-  Future signInWithEmailAndPassword({required email, required password}) async {
+  Future signInWithEmailAndPassword(
+      {required email, required password, required context}) async {
     try {
-      final User? user = (await _auth.signInWithEmailAndPassword(
+      final User? user = (await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       ))
@@ -114,8 +115,11 @@ class UserDetails {
         success = true;
         userEmail = user.email.toString();
         if (success) {
-           SharedPreferences prefs = await SharedPreferences.getInstance();
-           prefs.setBool('issignedin', true);
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setBool('issignedin', true);
+          prefs.setString('useremail', email);
+          prefs.setString('userpass', password);
+          debugPrint("helloworld");
           Navigator.pushReplacementNamed(context, '/home');
         }
       } else {
@@ -124,16 +128,17 @@ class UserDetails {
     } on FirebaseAuthException catch (e) {
       error = e.toString();
     } catch (e) {
-      print(e);
+      showSnack(e.toString(), context);
     }
   }
 
-  void signout(BuildContext context) async{
-    _auth.signOut();
-    Navigator.pushReplacementNamed(context, '/');
+  void signout(BuildContext context) async {
+    auth.signOut();
+    Navigator.pushReplacementNamed(context, '/login');
     Future.delayed(Duration(seconds: 1));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('issignedin', false);
+    prefs.setStringList('', []);
     showSnack("Signout successfull", context);
   }
 

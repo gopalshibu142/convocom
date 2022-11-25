@@ -232,7 +232,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       onPressed: () async {
                         await user.signInWithEmailAndPassword(
                             email: logindetails.loginemail.control.text,
-                            password: logindetails.loginpass.control.text);
+                            password: logindetails.loginpass.control.text
+                            ,context: context);
                         
                       },
                       child: Text("Login"),
