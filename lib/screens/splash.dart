@@ -25,12 +25,12 @@ class _SplashFuturePageState extends State<SplashFuturePage> {
   var pass;
   Future<Widget> futureCallLogin() async {
     // do async operation ( api call, auto login)
-    
+   
     user = UserDetails();
     auth = FirebaseAuth.instance;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     signed = prefs.getBool('issignedin');
-    if (signed = true) {
+    if (signed == true) {
       email = prefs.getString('useremail');
       pass = prefs.getString('userpass');
       auth.signInWithEmailAndPassword(email: email, password: pass);
@@ -52,8 +52,7 @@ class _SplashFuturePageState extends State<SplashFuturePage> {
   @override
   Widget build(BuildContext context) {
     return EasySplashScreen(
-      logo: Image.network(
-          'https://cdn4.iconfinder.com/data/icons/logos-brands-5/24/flutter-512.png'),
+      logo: Image.asset('assets/CONVOCOM.png'),
       title: Text("CONVOCOM",
           style:
               GoogleFonts.permanentMarker(color: Colors.white, fontSize: 38)),

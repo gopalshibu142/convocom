@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:convocom/global.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 
 class Home extends StatefulWidget {
   late UserDetails user;
@@ -15,6 +16,10 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late UserDetails user;
+  static List<Widget> _widgetOptions = [
+    Container(),Container(),Container()
+  ];
+  int _selectedIndex = 0;
   @override
   var usermail;
   _HomeState(user) {
@@ -35,11 +40,32 @@ class _HomeState extends State<Home> {
           },
         ),
       ),
+      bottomNavigationBar: GNav(
+        //rippleColor: Colors.grey[300]!,
+       // hoverColor: Colors.grey[100]!,
+          selectedIndex: _selectedIndex,
+          backgroundColor: Colors.black,
+          tabs: const [
+            GButton(
+              icon: Icons.home,
+              text: 'Home',
+            ),
+            GButton(
+              icon: Icons.search,
+              text: 'Search',
+            ),
+            GButton(
+              icon: Icons.person,
+              text: 'Profile',
+            ),
+          ],
+          onTabChange: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          }),
       body: Center(
-        child: Container(
-          color: Colors.black45,
-          child: Text("${user.auth.currentUser}"),
-        ),
+        child: _widgetOptions.elementAt(_selectedIndex),
       ),
     );
   }
