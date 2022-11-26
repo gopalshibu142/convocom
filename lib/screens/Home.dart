@@ -16,9 +16,9 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late UserDetails user;
-  static List<Widget> _widgetOptions = [
-    Container(),Container(),Container()
-  ];
+  late List<Widget> _widgetOptions;
+
+ 
   int _selectedIndex = 0;
   @override
   var usermail;
@@ -27,7 +27,12 @@ class _HomeState extends State<Home> {
   }
   void initState() {
     super.initState();
+    _widgetOptions = [home(), community(), profile()];
   }
+
+ 
+
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +46,8 @@ class _HomeState extends State<Home> {
         ),
       ),
       bottomNavigationBar: GNav(
-        //rippleColor: Colors.grey[300]!,
-       // hoverColor: Colors.grey[100]!,
+          //rippleColor: Colors.grey[300]!,
+          // hoverColor: Colors.grey[100]!,
           selectedIndex: _selectedIndex,
           backgroundColor: Colors.black,
           tabs: const [
@@ -69,4 +74,7 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+   Container home() => Container();
+   Container community() => Container();
+    Container profile() => Container();
 }

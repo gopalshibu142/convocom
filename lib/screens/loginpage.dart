@@ -231,7 +231,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     OutlinedButton(
                       onPressed: () async {
                         await user.signInWithEmailAndPassword(
-                            email: logindetails.loginemail.control.text,
+                            email: logindetails.loginemail.control.text.trim(),
                             password: logindetails.loginpass.control.text
                             ,context: context);
                         

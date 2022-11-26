@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'screens/Home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class UI {
   var backgrounds = ['assets/bg1.json', 'assets/bg2.json', 'assets/bg3.json'];
@@ -81,8 +82,7 @@ class UserDetails {
 
   Future register({required email, required password}) async {
     try {
-      final credential =
-          await auth.createUserWithEmailAndPassword(
+      final credential = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -127,6 +127,7 @@ class UserDetails {
       }
     } on FirebaseAuthException catch (e) {
       error = e.toString();
+      showSnack(error, context);
     } catch (e) {
       showSnack(e.toString(), context);
     }
@@ -140,16 +141,31 @@ class UserDetails {
     prefs.setBool('issignedin', false);
     prefs.setStringList('', []);
     showSnack("Signout successfull", context);
+    //showAWDialog(context, DialogType.success,'Success!',"Your account has been registered successfully");
   }
 
   void showSnack(content, context) {
     var snackbar = SnackBar(
-      content: const Text('Signed out successfully'),
+      backgroundColor: Colors.black,
+      content: Text(content),
       action: SnackBarAction(
         label: 'ok',
         onPressed: () {},
       ),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackbar);
+  }
+
+  void showAWDialog(context, dialogtype,title,content) {
+    AwesomeDialog(
+      context: context,
+      animType: AnimType.scale,
+      dialogType: dialogtype,
+      title: title,
+      desc: content,
+      btnOkOnPress: () {
+      },
+
+    ).show();
   }
 }
