@@ -8,6 +8,7 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:lottie/lottie.dart';
 
+
 import 'package:convocom/global.dart';
 
 class Login extends StatefulWidget {
@@ -57,11 +58,21 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       body: Container(
         child: Stack(
           children: [
-            Container(
-                //height: double.infinity,
-                width: double.infinity,
-                height: double.infinity,
-                child: Lottie.asset(gui.background, fit: BoxFit.fill)),
+            
+             Container(
+                  //height: double.infinity,
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                          gui.changeBG();
+                      });
+                    
+                      //debugPrint(gui.background);
+                    },
+                    child: Lottie.asset(gui.background, fit: BoxFit.fill))),
+            
             AnimatedOpacity(
               opacity: titleop,
               duration: Duration(milliseconds: 500),
@@ -69,15 +80,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 duration: Duration(milliseconds: 1000),
                 padding: EdgeInsets.only(top: 90),
                 alignment: titlealign,
-                child: TextButton(
-                  onPressed: () => setState(() {
-                    gui.changeBG();
-                    debugPrint(gui.background);
-                  }),
-                  child: Text("CONVOCOM",
-                      style: GoogleFonts.permanentMarker(
-                          color: gui.clrlog, fontSize: 38)),
-                ),
+                child: Text("CONVOCOM",
+                    style: GoogleFonts.permanentMarker(
+                        color: gui.clrlog, fontSize: 38)),
               ),
             ),
             Container(
@@ -118,8 +123,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 0.3,
                 1,
               ]),
-          border: 1,
-          blur: 1,
+          border: 2,
+          blur: 1.2,
           borderGradient: LinearGradient(
               begin: Alignment.bottomRight,
               end: Alignment.topLeft,
@@ -232,9 +237,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       onPressed: () async {
                         await user.signInWithEmailAndPassword(
                             email: logindetails.loginemail.control.text.trim(),
-                            password: logindetails.loginpass.control.text
-                            ,context: context);
-                        
+                            password: logindetails.loginpass.control.text,
+                            context: context);
                       },
                       child: Text("Login"),
                       style: OutlinedButton.styleFrom(
@@ -265,7 +269,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                           flipcontroller.toggleCard();
                         },
                         child: Text(
-                          "Sign in",
+                          "Sign up",
                           style: GoogleFonts.roboto(fontSize: 18),
                         ),
                       ),
@@ -286,7 +290,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         child: GlassmorphicContainer(
           width: 350,
           height: 600,
-          borderRadius: 3,
+          borderRadius: 20,
           linearGradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -298,8 +302,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 0.3,
                 1,
               ]),
-          border: 1,
-          blur: 1,
+          border:2,
+          blur: 1.2,
           borderGradient: LinearGradient(
               begin: Alignment.bottomRight,
               end: Alignment.topLeft,
