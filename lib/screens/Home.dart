@@ -74,7 +74,17 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-   Container home() => Container();
+   Container home() => Container(
+    color: Colors.black, 
+    height: double.infinity,  );
    Container community() => Container();
-    Container profile() => Container();
+    Container profile() => Container(
+      child: Column(
+        children: [
+          CircleAvatar(
+            backgroundColor: Colors.black,
+          )
+        ],
+      ),
+    );
 }

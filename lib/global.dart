@@ -1,3 +1,4 @@
+import 'dart:html';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -9,7 +10,14 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:vibration/vibration.dart';
 
 class UI {
-  var backgrounds = ['assets/bg1.json', 'assets/bg2.json', 'assets/bg3.json','assets/bg7.json','assets/bg8.json','assets/bg9.json'];
+  var backgrounds = [
+    'assets/bg1.json',
+    'assets/bg2.json',
+    'assets/bg3.json',
+    'assets/bg7.json',
+    'assets/bg8.json',
+    'assets/bg9.json'
+  ];
   //var colorlogin = [Colors.white, Colors.black];
   var background;
   late Color clrlog;
@@ -22,8 +30,9 @@ class UI {
     this.clrlog = rn == 0 ? Colors.white : Colors.black;
   }
 
-  UI() {
+  UI(context) {
     final _random = new Random();
+
     rn = _random.nextInt(backgrounds.length);
 // generate a random index based on the list length
 // and use it to retrieve the element
@@ -69,6 +78,7 @@ class TextControl {
 }
 
 class UserDetails {
+  //Credential crd;
   // late BuildContext context;
   late final FirebaseAuth auth;
   UserDetails() {

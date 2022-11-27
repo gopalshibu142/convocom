@@ -37,7 +37,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    gui = UI();
+    gui = UI(context);
     flipcontroller = FlipCardController();
     Future.delayed(Duration(seconds: 2), (() {
       setState(() {
@@ -397,7 +397,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       onPressed: () => setState(() {
                         obsecure = !obsecure;
                       }),
-                      icon: obsecure
+                      icon: !obsecure
                           ? Icon(
                               Icons.visibility,
                               color: Colors.green,
