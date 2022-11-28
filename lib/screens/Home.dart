@@ -18,8 +18,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   late UserDetails user;
   late List<Widget> _widgetOptions;
-
- 
+  late PageController pagecontroller;
+  var temp = 50.0;
   int _selectedIndex = 0;
   @override
   var usermail;
@@ -28,66 +28,89 @@ class _HomeState extends State<Home> {
   }
   void initState() {
     super.initState();
-    _widgetOptions = [home(), community(), profile()];
+    pagecontroller = PageController();
+    _widgetOptions = [
+      home(),
+      community(),
+      profile()
+    ];
   }
-
- 
-
- 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.person),
-          onPressed: () {
-            user.signout(context);
-          },
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              user.signout(context);
+            },
+          ),
         ),
-      ),
-      bottomNavigationBar: GNav(
-          //rippleColor: Colors.grey[300]!,
-          // hoverColor: Colors.grey[100]!,
-          selectedIndex: _selectedIndex,
-          backgroundColor: Colors.black,
-          tabs: const [
-            GButton(
-              icon: Icons.home,
-              text: 'Home',
-            ),
-            GButton(
-              icon: Icons.search,
-              text: 'Search',
-            ),
-            GButton(
-              icon: Icons.person,
-              text: 'Profile',
-            ),
+        bottomNavigationBar: GNav(
+            //rippleColor: Colors.grey[300]!,
+            // hoverColor: Colors.grey[100]!,
+            selectedIndex: _selectedIndex,
+            backgroundColor: Colors.black,
+            tabs: const [
+              GButton(
+                icon: Icons.home,
+                text: 'Home',
+              ),
+              GButton(
+                icon: Icons.search,
+                text: 'Search',
+              ),
+              GButton(
+                icon: Icons.person,
+                text: 'Profile',
+              ),
+            ],
+            onTabChange: (index) {
+              setState(() {
+                _selectedIndex = index;
+                //pagecontroller.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+                pagecontroller.animateToPage(_selectedIndex,
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.easeIn);
+              });
+            }),
+        body: PageView(
+          physics: NeverScrollableScrollPhysics(),
+          controller: pagecontroller,
+          children: <Widget>[
+            home(),
+            community(),
+            profile()
           ],
-          onTabChange: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          }),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-    );
+        ));
   }
-   Container home() => Container(
-    color: Colors.black, 
-    height: double.infinity,  );
-   Container community() => Container();
-    Container profile() => Container(
-      padding:EdgeInsets.only(top: 20),
+
+  Container home() => Container(
+        color: Colors.black,
+        height: double.infinity,
+      );
+  Container community() => Container();
+  Widget profile() {
+    return Container(
+      padding: EdgeInsets.only(top: 20),
       child: Column(
-        
         children: [
           CircleAvatar(
+            radius: temp,
             backgroundColor: Colors.black,
+            child: IconButton(
+              icon: Icon(Icons.person),
+              onPressed: () {
+                setState(() {
+                  temp == 100.0 ? temp = 50.0 : temp = 100.0;
+                  debugPrint("Hellow");
+                });
+              },
+            ),
           )
         ],
       ),
     );
+  }
 }
