@@ -1,4 +1,4 @@
-import 'package:convocom/global.dart';
+import 'package:convocom/firebasefn.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'screens/loginpage.dart';

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:convocom/global.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:convocom/firebasefn.dart';
 
 class Home extends StatefulWidget {
   late UserDetails user;
@@ -79,7 +80,9 @@ class _HomeState extends State<Home> {
     height: double.infinity,  );
    Container community() => Container();
     Container profile() => Container(
+      padding:EdgeInsets.only(top: 20),
       child: Column(
+        
         children: [
           CircleAvatar(
             backgroundColor: Colors.black,
