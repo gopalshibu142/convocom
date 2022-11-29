@@ -29,11 +29,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     pagecontroller = PageController();
-    _widgetOptions = [
-      home(),
-      community(),
-      profile()
-    ];
+    _widgetOptions = [home(), community(), profile()];
   }
 
   @override
@@ -78,11 +74,7 @@ class _HomeState extends State<Home> {
         body: PageView(
           physics: NeverScrollableScrollPhysics(),
           controller: pagecontroller,
-          children: <Widget>[
-            home(),
-            community(),
-            profile()
-          ],
+          children: <Widget>[home(), community(), profile()],
         ));
   }
 
@@ -97,18 +89,24 @@ class _HomeState extends State<Home> {
       child: Column(
         children: [
           CircleAvatar(
-            radius: temp,
+            radius: 80,
             backgroundColor: Colors.black,
             child: IconButton(
-              icon: Icon(Icons.person),
+              icon: Icon(
+                Icons.person,
+                size: 80,
+              ),
               onPressed: () {
                 setState(() {
-                  temp == 100.0 ? temp = 50.0 : temp = 100.0;
-                  debugPrint("Hellow");
+                  
+                  //temp == 100.0 ? temp = 50.0 : temp = 100.0;
+                  //debugPrint("Hellow");
                 });
               },
             ),
-          )
+          ),
+          Text("Welcome"),
+          Text("${user.auth.currentUser?.email}")
         ],
       ),
     );

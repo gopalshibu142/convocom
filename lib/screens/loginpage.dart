@@ -58,21 +58,19 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       body: Container(
         child: Stack(
           children: [
-            
-             Container(
-                  //height: double.infinity,
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: GestureDetector(
+            Container(
+                //height: double.infinity,
+                width: double.infinity,
+                height: double.infinity,
+                child: GestureDetector(
                     onTap: () {
                       setState(() {
-                          gui.changeBG();
+                        gui.changeBG();
                       });
-                    
+
                       //debugPrint(gui.background);
                     },
                     child: Lottie.asset(gui.background, fit: BoxFit.fill))),
-            
             AnimatedOpacity(
               opacity: titleop,
               duration: Duration(milliseconds: 500),
@@ -230,7 +228,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   children: [
                     TextButton(
                         onPressed: () {
-                          //print("🌛".toString());
+                          user.forgotpass(
+                              email: logindetails.loginemail.control.text,
+                              context: context);
                         },
                         child: Text("forgot password?")),
                     OutlinedButton(
@@ -302,7 +302,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 0.3,
                 1,
               ]),
-          border:2,
+          border: 2,
           blur: 1.2,
           borderGradient: LinearGradient(
               begin: Alignment.bottomRight,

@@ -86,6 +86,21 @@ class UserDetails {
     //showAWDialog(context, DialogType.success,'Success!',"Your account has been registered successfully");
   }
 
+  void forgotpass({required email, required context}) async{
+    try {
+      await auth.sendPasswordResetEmail(email: email.trim()).then((value) => showSnack("Check your email", context));
+      
+    } on FirebaseAuthException catch (e) {
+      //var error;
+      Vibration.vibrate();
+      error = e.toString();
+      showSnack(error, context);
+    }
+     catch (e) {
+      showSnack(e.toString(), context);
+    }
+  }
+
   void showSnack(content, context) {
     var snackbar = SnackBar(
       backgroundColor: Colors.black,
