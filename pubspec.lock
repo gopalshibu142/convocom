@@ -65,6 +65,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  awesome_icons:
+    dependency: "direct main"
+    description:
+      name: awesome_icons
+      sha256: fa337ad92a737fae9af9652d6936f6f282b5847bb0fd61ccef00027468fff81b
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -289,6 +297,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  firebase_database:
+    dependency: "direct main"
+    description:
+      name: firebase_database
+      sha256: bd8e2b70037e472d25847bb8152374441f54dfbabdc8787f949a47b108046dad
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.0.6"
+  firebase_database_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_database_platform_interface
+      sha256: "3ab1db1f833b78037c069e7a2b983c62f9d4f94f20370cbb143991f581b2e592"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.2+14"
+  firebase_database_web:
+    dependency: transitive
+    description:
+      name: firebase_database_web
+      sha256: d399d60cba9574c439094d5755e803eab24231b4093d3cda8c83c5623775b86a
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1+16"
   fixnum:
     dependency: transitive
     description:
@@ -314,10 +346,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_launcher_icons
-      sha256: a9de6706cd844668beac27c0aed5910fa0534832b3c2cad61a5fd977fce82a5d
+      sha256: ce0e501cfc258907842238e4ca605e74b7fd1cdf04b3b43e86c43f3e40a1592c
       url: "https://pub.dev"
     source: hosted
-    version: "0.10.0"
+    version: "0.11.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -608,6 +640,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.5"
+  recase:
+    dependency: transitive
+    description:
+      name: recase
+      sha256: e4eb4ec2dcdee52dcf99cb4ceabaffc631d7424ee55e56f280bc039737f89213
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.0"
   rive:
     dependency: transitive
     description:

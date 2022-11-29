@@ -265,7 +265,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                           setState(() {
                             titleop = 0.0;
                           });
-
+                          user.blash();
+                          
                           flipcontroller.toggleCard();
                         },
                         child: Text(
@@ -556,25 +557,24 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       onPressed: () async {
                         var snackbar;
                         await user.register(
-                            email: logindetails.email.control.text,
-                            password: logindetails.pass.control.text);
-                        if (user.registered) {
-                          snackbar = SnackBar(
-                            content: const Text('Success'),
-                            action: SnackBarAction(
-                              label: 'ok',
-                              onPressed: () {},
-                            ),
-                          );
-                        } else {
-                          snackbar = SnackBar(
-                            content: Text(user.error),
-                            action: SnackBarAction(
-                              label: 'ok',
-                              onPressed: () {},
-                            ),
-                          );
-                        }
+                            details: logindetails, context: context);
+                        // if (user.registered) {
+                        //   snackbar = SnackBar(
+                        //     content: const Text('Success'),
+                        //     action: SnackBarAction(
+                        //       label: 'ok',
+                        //       onPressed: () {},
+                        //     ),
+                        //   );
+                        // } else {
+                        //   snackbar = SnackBar(
+                        //     content: Text(user.error),
+                        //     action: SnackBarAction(
+                        //       label: 'ok',
+                        //       onPressed: () {},
+                        //     ),
+                        //   );
+                        // }
                         ScaffoldMessenger.of(context).showSnackBar(snackbar);
                       },
                       child: Text("Signup"),

@@ -3,14 +3,19 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'screens/loginpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'firebase_options.dart';
 //import 'package:firebase_core/firebase_core.dart';
 import 'screens/splash.dart';
 import 'screens/Home.dart';
 
-void main() async {
+Future <void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   //FirebaseAppCheck.instance.useEmulator("10.0.2.2", 9099);
   runApp(Myapp());
 }

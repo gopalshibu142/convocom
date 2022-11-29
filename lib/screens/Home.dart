@@ -4,6 +4,7 @@ import 'package:convocom/global.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:convocom/firebasefn.dart';
+import 'package:awesome_icons/awesome_icons.dart';
 
 class Home extends StatefulWidget {
   late UserDetails user;
@@ -89,23 +90,21 @@ class _HomeState extends State<Home> {
       child: Column(
         children: [
           CircleAvatar(
-            radius: 80,
-            backgroundColor: Colors.black,
-            child: IconButton(
-              icon: Icon(
-                Icons.person,
-                size: 80,
-              ),
-              onPressed: () {
-                setState(() {
-                  
-                  //temp == 100.0 ? temp = 50.0 : temp = 100.0;
-                  //debugPrint("Hellow");
-                });
-              },
+            radius: 82,
+            backgroundColor: Colors.green,
+            child: CircleAvatar(
+              
+              radius: 80,
+              backgroundColor: Colors.black,
+              child:  Icon(
+                  FontAwesomeIcons.userPlus,
+                  size: 100,
+                ),
+                
+              
             ),
           ),
-          Text("Welcome"),
+          SizedBox(height: 10,),
           Text("${user.auth.currentUser?.email}")
         ],
       ),
