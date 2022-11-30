@@ -3,8 +3,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-
 class UI {
+  var w;
+  var h;
   var backgrounds = [
     'assets/bg1.json',
     'assets/bg2.json',
@@ -26,9 +27,12 @@ class UI {
   }
 
   UI(context) {
+    // w = MediaQuery.of(context).size.width;
+    // h = MediaQuery.of(context).size.height;
     final _random = new Random();
 
     rn = _random.nextInt(backgrounds.length);
+    
 // generate a random index based on the list length
 // and use it to retrieve the element
     this.background = backgrounds[rn];
@@ -60,7 +64,7 @@ class LoginDetails {
   late TextEditingController code;
   late TextControl age;
 
-  void validSignin() {}
+  void validSignup() {}
 }
 
 class TextControl {
@@ -71,4 +75,3 @@ class TextControl {
   late TextEditingController control;
   late bool validator;
 }
-

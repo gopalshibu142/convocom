@@ -24,8 +24,10 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> with TickerProviderStateMixin {
   LoginDetails logindetails = new LoginDetails();
   late UserDetails user;
+  //var h, w;
   _LoginState(user) {
     this.user = user;
+    
   }
   late FlipCardController flipcontroller;
   var obsecure = true;
@@ -53,6 +55,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    var h=MediaQuery.of(context).size.height;
+    var w=MediaQuery.of(context).size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
@@ -70,13 +74,13 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
                       //debugPrint(gui.background);
                     },
-                    child: Lottie.asset(gui.background, fit: BoxFit.fill))),
+                    child: Lottie.asset(h/w>1.2?gui.background:'assets/bgwide1.json', fit: BoxFit.fill))),
             AnimatedOpacity(
               opacity: titleop,
               duration: Duration(milliseconds: 500),
               child: AnimatedContainer(
                 duration: Duration(milliseconds: 1000),
-                padding: EdgeInsets.only(top: 90),
+                padding: EdgeInsets.only(top: 80),
                 alignment: titlealign,
                 child: Text("CONVOCOM",
                     style: GoogleFonts.permanentMarker(
@@ -265,8 +269,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                           setState(() {
                             titleop = 0.0;
                           });
-                          user.blash();
-                          
+                          //  user.blash();
+
                           flipcontroller.toggleCard();
                         },
                         child: Text(

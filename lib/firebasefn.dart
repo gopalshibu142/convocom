@@ -17,12 +17,12 @@ class UserDetails {
   //Credential crd;
   // late BuildContext context;
   late final FirebaseAuth auth;
-  late final database;
-  late DatabaseReference userref;
+  //late final database;
+  //late DatabaseReference userref;
   UserDetails() {
-    auth = FirebaseAuth.instance;
-    database = FirebaseDatabase.instance;
-    userref = database.ref('users');
+    //auth = FirebaseAuth.instance;
+    //database = FirebaseDatabase.instance;
+    //userref = database.ref('users');
 
     // this.context = context;
   }
@@ -41,7 +41,7 @@ class UserDetails {
         password: details.pass.control.text,
       )
           .then((value) async {
-        createuser(details: details, context: context);
+        //createuser(details: details, context: context);
       });
       credential.user != null ? registered = true : registered = false;
       showSnack('Success', context);
@@ -146,26 +146,26 @@ class UserDetails {
     ).show();
   }
 
-  void createuser({required LoginDetails details, context}) async {
-    try {
-      DatabaseReference ref = await userref.child("${auth.currentUser?.uid}");
-      await ref.set({
-        'name': details.name.control.text,
-        'email': details.email.control.text,
-        'phone': details.phone.control.text,
-        'dob': details.dob.text,
-      });
-    } catch (e) {
-      debugPrint(e.toString());
-      //showSnack(e.toString(), context);
-    }
-  }
+  // void createuser({required LoginDetails details, context}) async {
+  //   try {
+  //     DatabaseReference ref = await userref.child("${auth.currentUser?.uid}");
+  //     await ref.set({
+  //       'name': details.name.control.text,
+  //       'email': details.email.control.text,
+  //       'phone': details.phone.control.text,
+  //       'dob': details.dob.text,
+  //     });
+  //   } catch (e) {
+  //     debugPrint(e.toString());
+  //     //showSnack(e.toString(), context);
+  //   }
+  // }
 
-  void blash({context}) async {
-    try{DatabaseReference ref = userref.child("test");
-    ref.set({"ok":"ser"});}catch (e) {
-      debugPrint(e.toString());
-      showSnack(e.toString(), context);
-    }
-  }
+  // void blash({context}) async {
+  //   try{DatabaseReference ref = userref.child("test");
+  //   ref.set({"ok":"ser"});}catch (e) {
+  //     debugPrint(e.toString());
+  //     showSnack(e.toString(), context);
+  //   }
+  // }
 }
