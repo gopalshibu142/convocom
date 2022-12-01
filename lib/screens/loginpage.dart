@@ -74,7 +74,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
                       //debugPrint(gui.background);
                     },
-                    child: Lottie.asset(h/w>1.2?gui.background:'assets/bgwide1.json', fit: BoxFit.fill))),
+                    child:h/w>1.2? Lottie.asset(gui.background, fit: BoxFit.fill):
+                    Lottie.asset('assets/bgwide1.json', fit: BoxFit.fill))),
             AnimatedOpacity(
               opacity: titleop,
               duration: Duration(milliseconds: 500),

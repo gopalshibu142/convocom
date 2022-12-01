@@ -20,7 +20,7 @@ class UserDetails {
   //late final database;
   //late DatabaseReference userref;
   UserDetails() {
-    //auth = FirebaseAuth.instance;
+    auth = FirebaseAuth.instance;
     //database = FirebaseDatabase.instance;
     //userref = database.ref('users');
 
