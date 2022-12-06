@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:convocom/firebasefn.dart';
 import 'package:awesome_icons/awesome_icons.dart';
+//import 'package:convocom/bricks/Widgets Example/bottom_nav_bar_curved.dart';
 
 class Home extends StatefulWidget {
   late UserDetails user;
@@ -28,6 +29,8 @@ class _HomeState extends State<Home> {
     this.user = user;
   }
   void initState() {
+   // user.auth.currentUser?.updateDisplayName("Gopal S");
+   // user.auth.currentUser?.updatePhoneNumber("+917592806009" as PhoneAuthCredential);
     super.initState();
     pagecontroller = PageController();
     _widgetOptions = [home(), community(), profile()];
@@ -44,6 +47,7 @@ class _HomeState extends State<Home> {
             },
           ),
         ),
+        //bottomNavigationBar: BottomNavBarCurvedFb1() ,//Remember to add extendBody: true to scaffold!,
         bottomNavigationBar: GNav(
             //rippleColor: Colors.grey[300]!,
             // hoverColor: Colors.grey[100]!,
@@ -93,19 +97,20 @@ class _HomeState extends State<Home> {
             radius: 82,
             backgroundColor: Colors.green,
             child: CircleAvatar(
-              
               radius: 80,
               backgroundColor: Colors.black,
-              child:  Icon(
-                  FontAwesomeIcons.userPlus,
-                  size: 100,
-                ),
-                
-              
+              child: Icon(
+                FontAwesomeIcons.userPlus,
+                size: 100,
+              ),
             ),
           ),
-          SizedBox(height: 10,),
-          Text("${user.auth.currentUser?.email}")
+          SizedBox(
+            height: 10,
+          ),
+          Text("email : ${user.auth.currentUser?.email}\n"),
+          Text("name : ${user.auth.currentUser?.displayName}\n"),
+          //Text("phone : ${user.auth.currentUser?.email}"),
         ],
       ),
     );

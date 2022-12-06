@@ -56,6 +56,7 @@ dependencies:
   vibration: ^1.7.6
   awesome_icons: ^1.1.0
   firebase_database: ^10.0.6
+  quickalert: ^1.0.1
   # firebase_messaging: ^14.1.1
  # firebase_messaging: ^14.1.1
 

@@ -2,6 +2,8 @@
 
 //import 'dart:js';
 
+import 'dart:convert';
+
 import 'package:convocom/global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,6 +13,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:vibration/vibration.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:quickalert/quickalert.dart';
 //import 'firebase_real';
 
 class UserDetails {
@@ -35,6 +38,7 @@ class UserDetails {
   Future register({required LoginDetails details, required context}) async {
     try {
       registered = false;
+
       final credential = await auth
           .createUserWithEmailAndPassword(
         email: details.email.control.text,
@@ -45,6 +49,10 @@ class UserDetails {
       });
       credential.user != null ? registered = true : registered = false;
       showSnack('Success', context);
+      auth.currentUser?.updateDisplayName(details.name.control.text);
+      auth.currentUser?.updatePhoneNumber(
+      details.phone.control.text as PhoneAuthCredential);
+      auth.currentUser?.updateDisplayName(details.name.control.text);
     } on FirebaseAuthException catch (e) {
       error = e.toString();
       Vibration.vibrate();
@@ -95,16 +103,45 @@ class UserDetails {
   }
 
   void signout(BuildContext context) async {
-    auth.signOut();
-    Navigator.pushReplacementNamed(context, '/login');
-    Future.delayed(Duration(seconds: 1));
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('issignedin', false);
-    prefs.setStringList('', []);
-    showSnack("Signout successfull", context);
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.confirm,
+      text: 'Do you want to logout',
+      confirmBtnText: 'Yes',
+      cancelBtnText: 'No',
+      confirmBtnColor: Colors.green,
+      onConfirmBtnTap: () async {
+        auth.signOut();
+        Navigator.pushReplacementNamed(context, '/login');
+        Future.delayed(Duration(seconds: 1));
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('issignedin', false);
+        prefs.setStringList('', []);
+        showSnack("Signout successfull", context);
+      },
+    );
+
     //showAWDialog(context, DialogType.success,'Success!',"Your account has been registered successfully");
   }
 
+  // void phonenocheck() {
+  //   FirebaseAuth.instance.verifyPhoneNumber(
+  //       phoneNumber: phoneNumber,
+  //       timeout: const Duration(minutes: 2),
+  //       verificationCompleted: (credential) async {
+  //         await (await auth.currentUser())?.updatePhoneNumberCredential(credential);
+  //         // either this occurs or the user needs to manually enter the SMS code
+  //       },
+  //       verificationFailed: null,
+  //       codeSent: (verificationId, [forceResendingToken]) async {
+  //         String smsCode;
+  //         // get the SMS code from the user somehow (probably using a text field)
+  //         final AuthCredential credential =
+  //           PhoneAuthProvider.getCredential(verificationId: verificationId, smsCode: smsCode);
+  //         await (await FirebaseAuth.instance.currentUser()).updatePhoneNumberCredential(credential);
+  //       },
+  //       codeAutoRetrievalTimeout: null);
+  // }
   void forgotpass({required email, required context}) async {
     try {
       await auth
@@ -135,16 +172,16 @@ class UserDetails {
     ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
-  void showAWDialog(context, dialogtype, title, content) {
-    AwesomeDialog(
-      context: context,
-      animType: AnimType.scale,
-      dialogType: dialogtype,
-      title: title,
-      desc: content,
-      btnOkOnPress: () {},
-    ).show();
-  }
+  // void showAWDialog(context, dialogtype, title, content) {
+  //   AwesomeDialog(
+  //     context: context,
+  //     animType: AnimType.scale,
+  //     dialogType: dialogtype,
+  //     title: title,
+  //     desc: content,
+  //     btnOkOnPress: () {},
+  //   ).show();
+  // }
 
   void createuser({required LoginDetails details, context}) async {
     try {
@@ -162,8 +199,10 @@ class UserDetails {
   }
 
   void blash({context}) async {
-    try{DatabaseReference ref = userref.child("test");
-    ref.set({"ok":"ser"});}catch (e) {
+    try {
+      DatabaseReference ref = userref.child("test");
+      ref.set({"ok": "ser"});
+    } catch (e) {
       debugPrint(e.toString());
       showSnack(e.toString(), context);
     }

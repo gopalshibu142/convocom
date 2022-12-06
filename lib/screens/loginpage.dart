@@ -10,7 +10,7 @@ import 'package:lottie/lottie.dart';
 import 'package:convocom/firebasefn.dart';
 
 import 'package:convocom/global.dart';
-
+//import 'package:convocom/bricks/Widgets Example/bottom_nav_bar_curved.dart';
 class Login extends StatefulWidget {
   late UserDetails user;
   Login({super.key, required UserDetails user}) {
@@ -601,6 +601,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       ),
     );
   }
+  
 
   @override
   void dispose() {
