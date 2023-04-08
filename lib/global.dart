@@ -1,6 +1,6 @@
 //import 'dart:html';
 import 'dart:math';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class UI {
@@ -74,4 +74,9 @@ class TextControl {
   }
   late TextEditingController control;
   late bool validator;
+}
+String randomString() {
+  final random = Random.secure();
+  final values = List<int>.generate(16, (i) => random.nextInt(255));
+  return base64UrlEncode(values);
 }

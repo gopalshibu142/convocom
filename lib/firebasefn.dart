@@ -7,12 +7,13 @@ import 'dart:convert';
 import 'package:convocom/global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:lottie/lottie.dart';
 //import 'screens/Home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:vibration/vibration.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
+//import 'package:firebase_database/firebase_database.dart';
 import 'package:quickalert/quickalert.dart';
 //import 'firebase_real';
 
@@ -21,11 +22,11 @@ class UserDetails {
   // late BuildContext context;
   late final FirebaseAuth auth;
   late final database;
-  late DatabaseReference userref;
+  //late DatabaseReference userref;
   UserDetails() {
     auth = FirebaseAuth.instance;
-    database = FirebaseDatabase.instance;
-    userref = database.ref('users');
+    //  database = FirebaseDatabase.instance;
+    //  userref = database.ref('users');
 
     // this.context = context;
   }
@@ -51,7 +52,7 @@ class UserDetails {
       showSnack('Success', context);
       auth.currentUser?.updateDisplayName(details.name.control.text);
       auth.currentUser?.updatePhoneNumber(
-      details.phone.control.text as PhoneAuthCredential);
+          details.phone.control.text as PhoneAuthCredential);
       auth.currentUser?.updateDisplayName(details.name.control.text);
     } on FirebaseAuthException catch (e) {
       error = e.toString();
@@ -104,8 +105,11 @@ class UserDetails {
 
   void signout(BuildContext context) async {
     QuickAlert.show(
+      backgroundColor: Colors.black,
       context: context,
       type: QuickAlertType.confirm,
+      customAsset: 'are you sure',
+
       text: 'Do you want to logout',
       confirmBtnText: 'Yes',
       cancelBtnText: 'No',
@@ -185,13 +189,13 @@ class UserDetails {
 
   void createuser({required LoginDetails details, context}) async {
     try {
-      DatabaseReference ref = await userref.child("${auth.currentUser?.uid}");
-      await ref.set({
-        'name': details.name.control.text,
-        'email': details.email.control.text,
-        'phone': details.phone.control.text,
-        'dob': details.dob.text,
-      });
+      // DatabaseReference ref = await userref.child("${auth.currentUser?.uid}");
+      // await ref.set({
+      //   'name': details.name.control.text,
+      //   'email': details.email.control.text,
+      //   'phone': details.phone.control.text,
+      //   'dob': details.dob.text,
+      // });
     } catch (e) {
       debugPrint(e.toString());
       //showSnack(e.toString(), context);
@@ -200,11 +204,12 @@ class UserDetails {
 
   void blash({context}) async {
     try {
-      DatabaseReference ref = userref.child("test");
-      ref.set({"ok": "ser"});
+      // DatabaseReference ref = database.ref("test");
+      //ref.set({"ok": "ser"});
     } catch (e) {
       debugPrint(e.toString());
       showSnack(e.toString(), context);
     }
   }
 }
+
