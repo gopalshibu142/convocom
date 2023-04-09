@@ -2,6 +2,8 @@
 import 'dart:math';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class UI {
   var w;
@@ -32,7 +34,7 @@ class UI {
     final _random = new Random();
 
     rn = _random.nextInt(backgrounds.length);
-    
+
 // generate a random index based on the list length
 // and use it to retrieve the element
     this.background = backgrounds[rn];
@@ -75,8 +77,15 @@ class TextControl {
   late TextEditingController control;
   late bool validator;
 }
+
 String randomString() {
   final random = Random.secure();
   final values = List<int>.generate(16, (i) => random.nextInt(255));
   return base64UrlEncode(values);
+}
+
+late User curuser;
+late DatabaseReference databaseReference;
+void setDB() {
+  databaseReference =FirebaseDatabase.instance.ref();
 }

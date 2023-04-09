@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:convocom/firebasefn.dart';
+import 'package:convocom/firebasefn.dart';
 
 class SplashFuturePage extends StatefulWidget {
   SplashFuturePage({Key? key}) : super(key: key);
@@ -26,7 +27,7 @@ class _SplashFuturePageState extends State<SplashFuturePage> {
   var pass;
   Future<Widget> futureCallLogin() async {
     // do async operation ( api call, auto login)
-   
+
     user = UserDetails();
     auth = FirebaseAuth.instance;
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -34,7 +35,9 @@ class _SplashFuturePageState extends State<SplashFuturePage> {
     if (signed == true) {
       email = prefs.getString('useremail');
       pass = prefs.getString('userpass');
-      auth.signInWithEmailAndPassword(email: email, password: pass);
+      user.signInWithEmailAndPassword(
+          email: email, password: pass, context: context);
+
       if (auth.currentUser != null)
         return Future.value(Home(
           user: user,

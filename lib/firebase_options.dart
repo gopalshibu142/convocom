@@ -4,6 +4,16 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
+/// Default [FirebaseOptions] for use with your Firebase apps.
+///
+/// Example:
+/// ```dart
+/// import 'firebase_options.dart';
+/// // ...
+/// await Firebase.initializeApp(
+///   options: DefaultFirebaseOptions.currentPlatform,
+/// );
+/// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -39,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '611363612087',
     projectId: 'convocomdb',
     authDomain: 'convocomdb.firebaseapp.com',
+    databaseURL: 'https://convocomdb-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'convocomdb.appspot.com',
     measurementId: 'G-21Q8PH8HB3',
   );
@@ -48,6 +59,7 @@ class DefaultFirebaseOptions {
     appId: '1:611363612087:android:be0d8ce35263b4b4c07432',
     messagingSenderId: '611363612087',
     projectId: 'convocomdb',
+    databaseURL: 'https://convocomdb-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'convocomdb.appspot.com',
   );
 
@@ -56,6 +68,7 @@ class DefaultFirebaseOptions {
     appId: '1:611363612087:ios:7b94f0e3e9906161c07432',
     messagingSenderId: '611363612087',
     projectId: 'convocomdb',
+    databaseURL: 'https://convocomdb-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'convocomdb.appspot.com',
     iosClientId: '611363612087-k1kphf9krscjluejfljo0fh141h72pa7.apps.googleusercontent.com',
     iosBundleId: 'com.example.convocom',
@@ -66,6 +79,7 @@ class DefaultFirebaseOptions {
     appId: '1:611363612087:ios:7b94f0e3e9906161c07432',
     messagingSenderId: '611363612087',
     projectId: 'convocomdb',
+    databaseURL: 'https://convocomdb-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'convocomdb.appspot.com',
     iosClientId: '611363612087-k1kphf9krscjluejfljo0fh141h72pa7.apps.googleusercontent.com',
     iosBundleId: 'com.example.convocom',

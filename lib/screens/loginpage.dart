@@ -338,6 +338,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   height: 30,
                 ),
                 TextFormField(
+                  controller: logindetails.name.control,
                   keyboardType: TextInputType.name,
                   style: GoogleFonts.roboto(color: gui.clrlog),
                   decoration: InputDecoration(
@@ -440,6 +441,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   height: 25,
                 ),
                 TextFormField(
+                  controller: logindetails.phone.control,
                   keyboardType: TextInputType.phone,
                   style: GoogleFonts.roboto(color: gui.clrlog),
                   decoration: InputDecoration(

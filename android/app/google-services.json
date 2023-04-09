@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "611363612087",
+    "firebase_url": "https://convocomdb-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "convocomdb",
     "storage_bucket": "convocomdb.appspot.com"
   },

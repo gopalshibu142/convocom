@@ -9,25 +9,25 @@ import 'firebase_options.dart';
 //import 'package:firebase_core/firebase_core.dart';
 import 'screens/splash.dart';
 import 'screens/Home.dart';
+import 'global.dart';
 
-Future <void> main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  setDB();
   //FirebaseAppCheck.instance.useEmulator("10.0.2.2", 9099);
   runApp(Myapp());
 }
 
 class Myapp extends StatefulWidget {
-  Myapp({super.key}) {
-   
-  }
+  Myapp({super.key}) {}
   late final prefs;
   late bool signedin;
   late String root;
-  
+
   @override
   State<Myapp> createState() => _MyappState();
 }
@@ -36,7 +36,7 @@ class _MyappState extends State<Myapp> {
   late UserDetails user;
   var prefs;
   late bool signedin;
-  
+
   _MyappState() {}
   @override
   void initState() {
@@ -60,7 +60,7 @@ class _MyappState extends State<Myapp> {
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => SplashFuturePage(),
-        '/login':(context) => Login(user: user),
+        '/login': (context) => Login(user: user),
         // When navigating to the "/second" route, build the SecondScreen widget.
         '/home': (context) => Home(
               user: user,

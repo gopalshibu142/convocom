@@ -8,7 +8,7 @@ import 'package:convocom/global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:lottie/lottie.dart';
-//import 'screens/Home.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:vibration/vibration.dart';
@@ -46,14 +46,21 @@ class UserDetails {
         password: details.pass.control.text,
       )
           .then((value) async {
-        //createuser(details: details, context: context);
-      });
-      credential.user != null ? registered = true : registered = false;
-      showSnack('Success', context);
-      auth.currentUser?.updateDisplayName(details.name.control.text);
+            showSnack('Success', context);
+        curuser = auth.currentUser!;
+        auth.currentUser?.updateDisplayName(details.name.control.text);
       auth.currentUser?.updatePhoneNumber(
           details.phone.control.text as PhoneAuthCredential);
       auth.currentUser?.updateDisplayName(details.name.control.text);
+      auth.signInWithEmailAndPassword(
+        email: details.email.control.text,
+        password: details.pass.control.text,
+      );
+      });
+
+      credential.user != null ? registered = true : registered = false;
+      
+    
     } on FirebaseAuthException catch (e) {
       error = e.toString();
       Vibration.vibrate();
@@ -69,6 +76,17 @@ class UserDetails {
     //_auth.user == null ? registered = false : registered = true;
 
     //debugPrint("\n$registered\n");
+    databaseReference.child('users').child(curuser.uid).set({
+      'email': details.email.control.text,
+      'name': details.name.control.text,
+      'phone': details.phone.control.text,
+      'dob': details.dob.text,
+    });
+    print({
+      'name': details.name.control.text,
+      'phone': details.phone.control.text,
+      'dob': details.dob.text,
+    });
   }
 
   Future signInWithEmailAndPassword(
@@ -83,6 +101,7 @@ class UserDetails {
       if (user != null) {
         success = true;
         userEmail = user.email.toString();
+        curuser = user;
         if (success) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setBool('issignedin', true);
@@ -109,7 +128,6 @@ class UserDetails {
       context: context,
       type: QuickAlertType.confirm,
       customAsset: 'are you sure',
-
       text: 'Do you want to logout',
       confirmBtnText: 'Yes',
       cancelBtnText: 'No',
@@ -213,3 +231,8 @@ class UserDetails {
   }
 }
 
+void debugDB() {
+  databaseReference.once().then((snapshot) {
+    print('Data: ${snapshot.snapshot.value}');
+  });
+}

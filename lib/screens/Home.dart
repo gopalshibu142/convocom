@@ -1,3 +1,6 @@
+import 'dart:ffi';
+
+import 'package:convocom/firebasefn.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:convocom/global.dart';
@@ -43,19 +46,21 @@ class _HomeState extends State<Home> {
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.logout),
             onPressed: () {
               user.signout(context);
             },
           ),
         ),
+        floatingActionButton:
+            FloatingActionButton(child: Icon(Icons.add), onPressed: () {}),
         //bottomNavigationBar: BottomNavBarCurvedFb1() ,//Remember to add extendBody: true to scaffold!,
         bottomNavigationBar: GNav(
             //rippleColor: Colors.grey[300]!,
             // hoverColor: Colors.grey[100]!,
             selectedIndex: _selectedIndex,
             backgroundColor: Colors.black,
-            tabs: const [
+            tabs: [
               GButton(
                 icon: Icons.home,
                 text: 'Home',
@@ -63,6 +68,9 @@ class _HomeState extends State<Home> {
               GButton(
                 icon: Icons.search,
                 text: 'Search',
+                onPressed: () {
+                  debugDB();
+                },
               ),
               GButton(
                 icon: Icons.person,
@@ -94,15 +102,23 @@ class _HomeState extends State<Home> {
           itemBuilder: (BuildContext context, int index) {
             // access element from list using index
             // you can create and return a widget of your choice
-            return ListTile(
-              title: Text(items[index]),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ChatContainer(name: items[index])),
-                );
-              },
+            return Container(
+              alignment: Alignment.center,
+              height: 100,
+              width: double.infinity,
+              child: ListTile(
+                leading:
+                    CircleAvatar(backgroundColor: Colors.red, maxRadius: 50),
+                title: Text(items[index]),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ChatContainer(name: items[index])),
+                  );
+                },
+              ),
             );
           }));
 
@@ -156,8 +172,8 @@ class _ChatContainerState extends State<ChatContainer> {
       text: 'Haai',
     )
   ];
-  final _user = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3ac');
-  final _notuser = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3bc');
+  final _user = types.User(id: curuser.uid);
+  //final _notuser = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3bc');
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
@@ -175,6 +191,7 @@ class _ChatContainerState extends State<ChatContainer> {
   void _addMessage(types.Message message) {
     setState(() {
       _messages.insert(0, message);
+      print(message.updatedAt);
     });
   }
 
@@ -184,6 +201,7 @@ class _ChatContainerState extends State<ChatContainer> {
       createdAt: DateTime.now().millisecondsSinceEpoch,
       id: randomString(),
       text: message.text,
+      
     );
     //print(DateTime.now().toString().replaceAll(':', '').replaceAll('.', '').replaceAll('-', '').replaceAll(' '', ''));
     _addMessage(textMessage);
