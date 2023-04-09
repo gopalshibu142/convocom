@@ -10,6 +10,7 @@ import 'package:convocom/firebasefn.dart';
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+
 //import 'package:convocom/bricks/Widgets Example/bottom_nav_bar_curved.dart';
 
 class Home extends StatefulWidget {
@@ -40,7 +41,7 @@ class _HomeState extends State<Home> {
     pagecontroller = PageController();
     _widgetOptions = [home(), community(), profile()];
   }
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,8 +53,14 @@ class _HomeState extends State<Home> {
             },
           ),
         ),
-        floatingActionButton:
-            FloatingActionButton(child: Icon(Icons.add), onPressed: () {}),
+        floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () {
+              _scaffoldKey
+              .currentState
+              ?.showBottomSheet(
+                   (ctx) => buildBottomSheet(ctx));
+            }),
         //bottomNavigationBar: BottomNavBarCurvedFb1() ,//Remember to add extendBody: true to scaffold!,
         bottomNavigationBar: GNav(
             //rippleColor: Colors.grey[300]!,
@@ -197,13 +204,46 @@ class _ChatContainerState extends State<ChatContainer> {
 
   void _handleSendPressed(types.PartialText message) {
     final textMessage = types.TextMessage(
-      author: _user,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      id: randomString(),
-      text: message.text,
-      
-    );
+        author: _user,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        id: randomString(),
+        text: message.text,
+        metadata: {
+          'timeofcreation': DateTime.now()
+              .toString()
+              .replaceAll(':', '')
+              .replaceAll('.', '')
+              .replaceAll('-', '')
+              .replaceAll(' ', '')
+        });
     //print(DateTime.now().toString().replaceAll(':', '').replaceAll('.', '').replaceAll('-', '').replaceAll(' '', ''));
+
     _addMessage(textMessage);
+    print((double.parse(DateTime.now()
+                .toString()
+                .replaceAll(':', '')
+                .replaceAll('.', '')
+                .replaceAll('-', '')
+                .replaceAll(' ', '')) /
+            10000)
+        .floor()
+        .toInt());
   }
+}
+
+Container buildBottomSheet(BuildContext ctx) {
+  return Container(
+    height: 300,
+    padding:EdgeInsets.all(50),
+    child: ListView(
+      children: [
+        TextField(),
+        OutlinedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+            },
+            child: Text('Close'))
+      ],
+    ),
+  );
 }

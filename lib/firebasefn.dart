@@ -46,21 +46,19 @@ class UserDetails {
         password: details.pass.control.text,
       )
           .then((value) async {
-            showSnack('Success', context);
+        showSnack('Success', context);
         curuser = auth.currentUser!;
         auth.currentUser?.updateDisplayName(details.name.control.text);
-      auth.currentUser?.updatePhoneNumber(
-          details.phone.control.text as PhoneAuthCredential);
-      auth.currentUser?.updateDisplayName(details.name.control.text);
-      auth.signInWithEmailAndPassword(
-        email: details.email.control.text,
-        password: details.pass.control.text,
-      );
+        auth.currentUser?.updatePhoneNumber(
+            details.phone.control.text as PhoneAuthCredential);
+        auth.currentUser?.updateDisplayName(details.name.control.text);
+        auth.signInWithEmailAndPassword(
+          email: details.email.control.text,
+          password: details.pass.control.text,
+        );
       });
 
       credential.user != null ? registered = true : registered = false;
-      
-    
     } on FirebaseAuthException catch (e) {
       error = e.toString();
       Vibration.vibrate();
@@ -92,6 +90,7 @@ class UserDetails {
   Future signInWithEmailAndPassword(
       {required email, required password, required context}) async {
     try {
+      QuickAlert.show(context: context, type: QuickAlertType.loading);
       final User? user = (await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -127,11 +126,13 @@ class UserDetails {
       backgroundColor: Colors.black,
       context: context,
       type: QuickAlertType.confirm,
-      customAsset: 'are you sure',
+      animType: QuickAlertAnimType.slideInUp,
+      //widget: Lottie.asset('assets/warning.json'),
       text: 'Do you want to logout',
       confirmBtnText: 'Yes',
       cancelBtnText: 'No',
       confirmBtnColor: Colors.green,
+
       onConfirmBtnTap: () async {
         auth.signOut();
         Navigator.pushReplacementNamed(context, '/login');
