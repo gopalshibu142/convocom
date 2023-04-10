@@ -109,4 +109,4 @@ void showSnack(content, context) {
 FirebaseFirestore cloud = FirebaseFirestore.instance;
 
 var curr_msgid = '';
-Map user_message ={};
+Map mapname_id={};

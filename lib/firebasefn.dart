@@ -283,10 +283,11 @@ void addConncetion(String email, context) async {
 }
 
 Future<List> getPeoplelist() async {
-  print('called');
+  // print('called');
   List people = [];
   List peopleID = [];
   List msgID = [];
+  mapname_id = {};
   await databaseReference
       .child('users')
       .child(curuser.uid)
@@ -294,11 +295,10 @@ Future<List> getPeoplelist() async {
       .once()
       .then((value) {
     value.snapshot.children.forEach((element) {
-      print(element);
+      // print(element);
       //print(value.snapshot.value);
       value.snapshot.children.forEach((element) {
-        if(!peopleID.contains(element.key))
-        peopleID.add(element.key);
+        if (!peopleID.contains(element.key)) peopleID.add(element.key);
         msgID.add(element.value);
       });
     });
@@ -317,9 +317,61 @@ Future<List> getPeoplelist() async {
         .then((value) {
       // print(value.snapshot.value);
       people.add(value.snapshot.value);
+      mapname_id.addAll({value.snapshot.value: element});
     });
+    //print(mapname_id);
   }
   return people;
 }
 
-void addMessagetoDB(types.TextMessage message) {}
+Future<String> getConvId(name) async {
+  var receiverID = mapname_id[name];
+  var v;
+
+  var conId;
+  await databaseReference
+      .child('users')
+      .child(curuser.uid)
+      .child('people')
+      .child(receiverID)
+      .once()
+      .then((value) {
+    conId = value.snapshot.value;
+  });
+  return conId;
+}
+
+void addMessagetoDB(types.TextMessage message, name) async {
+  //print("object");
+  var conId = await getConvId(name);
+  databaseReference.child('messages').child(conId).update({
+    message.id: {
+      'auther': curuser.uid,
+      'createdAt': message.createdAt,
+      'text': message.text
+    }
+  });
+}
+
+Future<List<types.TextMessage>> getMessage(name) async {
+  List<types.TextMessage> msgs = [];
+  var convid = await getConvId(name);
+  await databaseReference
+      .child('messages')
+      .child(convid)
+      .orderByChild('createdAt')
+      .once()
+      .then((value) {
+    value.snapshot.children.forEach((element) {
+      var msg = types.TextMessage(
+          author: types.User(id: element.child('auther').value.toString()),
+          id: element.key ?? '',
+          text: element.child('text').value.toString(),
+          createdAt: int.parse(element.child('createdAt').value.toString()));
+      msgs.insert(0,msg);
+      //msgs = msgs.reversed.toList();
+      
+    });
+  });
+  return msgs;
+}
