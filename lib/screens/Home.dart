@@ -10,6 +10,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:lottie/lottie.dart';
+import 'package:shimmer/shimmer.dart';
 
 //import 'package:convocom/bricks/Widgets Example/bottom_nav_bar_curved.dart';
 
@@ -60,10 +62,8 @@ class _HomeState extends State<Home> {
             child: Icon(Icons.add),
             onPressed: () {
               setState(() {
-                this
-                    ._scaffoldKey
-                    .currentState
-                    ?.showBottomSheet((ctx) => buildBottomSheet(ctx));
+                this._scaffoldKey.currentState?.showBottomSheet(
+                    (ctx) => buildBottomSheet(ctx, _scaffoldKey));
               });
             }),
         //bottomNavigationBar: BottomNavBarCurvedFb1() ,//Remember to add extendBody: true to scaffold!,
@@ -124,10 +124,19 @@ class _HomeState extends State<Home> {
                       width: double.infinity,
                       child: ListTile(
                         leading: CircleAvatar(
-                            backgroundColor: Colors.red, maxRadius: 50),
+                          minRadius: 49,
+                          backgroundColor: Colors.grey,
+                          maxRadius: 50,
+                          child: LottieBuilder.asset(
+                            
+                            'assets/avatar.json',
+                            fit: BoxFit.fill,
+                          ),
+                        ),
                         title: Text(people[index]),
                         onTap: () async {
                           var messages = await getMessage(people[index]);
+                          convID = await getConvId(people[index]);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -141,7 +150,29 @@ class _HomeState extends State<Home> {
                     );
                   });
             } else {
-              return CircularProgressIndicator();
+              return SizedBox(
+                width: 200.0,
+                height: 100.0,
+                child: Shimmer.fromColors(
+                  baseColor: Color.fromARGB(255, 48, 45, 45),
+                  highlightColor: Color.fromARGB(255, 0, 0, 0),
+                  child: ListView(
+                    children: [
+                      for (int i = 0; i <= 10;i++)
+                        Container(
+                          height: 100,
+                          alignment: Alignment.center,
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              maxRadius: 50,
+                            ),
+                            title: Text('username'),
+                          ),
+                        )
+                    ],
+                  ),
+                ),
+              );
             }
           }));
 
@@ -194,11 +225,17 @@ class _ChatContainerState extends State<ChatContainer> {
   var name;
   _ChatContainerState(this.name, this._messages);
   late DatabaseReference dbref;
-  var convid;
+
   @override
   void initState() {
     dbref = FirebaseDatabase.instance.ref();
-
+    dbref.child('messages').child(convID).onValue.listen((event) async {
+      setState(() async {
+        print(event.snapshot.value);
+        print('object');
+        _messages = await getMessage(name);
+      });
+    });
     // TODO: implement initState
     super.initState();
   }
@@ -208,16 +245,6 @@ class _ChatContainerState extends State<ChatContainer> {
   //final _notuser = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3bc');
   @override
   Widget build(BuildContext context) {
-    convid = Future.delayed(Duration(microseconds: 0)).then((value) async {
-      convid = getConvId(name);
-      dbref.child('messages').child(convid).onValue.listen((event) async {
-      setState(() async {
-        _messages = await getMessage(name);
-      });
-    });
-    });
-
-    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
@@ -249,7 +276,6 @@ class _ChatContainerState extends State<ChatContainer> {
     //print(DateTime.now().toString().replaceAll(':', '').replaceAll('.', '').replaceAll('-', '').replaceAll(' '', ''));
     addMessagetoDB(textMessage, name);
     _addMessage(textMessage);
-    getMessage(name);
   }
 
   @override
@@ -258,7 +284,8 @@ class _ChatContainerState extends State<ChatContainer> {
   }
 }
 
-Container buildBottomSheet(BuildContext ctx) {
+Container buildBottomSheet(
+    BuildContext ctx, GlobalKey<ScaffoldState> scaffold) {
   TextEditingController txt = TextEditingController();
   return Container(
     // color: Colors.red,
@@ -270,8 +297,9 @@ Container buildBottomSheet(BuildContext ctx) {
             controller: txt,
             decoration: InputDecoration(
                 suffix: IconButton(
-                    onPressed: () {
+                    onPressed: () async {
                       addConncetion(txt.text, ctx);
+                      scaffold.currentState?.setState(() {});
                     },
                     icon: Icon(Icons.search)))),
         TextButton(

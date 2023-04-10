@@ -1,6 +1,7 @@
 //import 'dart:html';
 import 'dart:math';
 import 'dart:convert';
+import 'package:convocom/firebasefn.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -109,4 +110,5 @@ void showSnack(content, context) {
 FirebaseFirestore cloud = FirebaseFirestore.instance;
 
 var curr_msgid = '';
-Map mapname_id={};
+Map mapname_id = {};
+var convID;
