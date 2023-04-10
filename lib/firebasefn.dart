@@ -11,6 +11,7 @@ import 'package:lottie/lottie.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
 import 'package:flutter/material.dart';
 //import 'package:firebase_database/firebase_database.dart';
@@ -180,21 +181,6 @@ class UserDetails {
     }
   }
 
-  void showSnack(content, context) {
-    var snackbar = SnackBar(
-      backgroundColor: Colors.black,
-      content: Text(
-        content,
-        style: TextStyle(color: Colors.white),
-      ),
-      action: SnackBarAction(
-        label: 'ok',
-        onPressed: () {},
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackbar);
-  }
-
   // void showAWDialog(context, dialogtype, title, content) {
   //   AwesomeDialog(
   //     context: context,
@@ -236,4 +222,28 @@ void debugDB() {
   databaseReference.once().then((snapshot) {
     print('Data: ${snapshot.snapshot.value}');
   });
+}
+
+void addConncetion(String email, context) {
+  try {
+    DatabaseReference usersRef = FirebaseDatabase.instance.ref().child('users');
+    Query query =
+        usersRef.orderByChild('email').equalTo(email);
+    query.once().then((snap) {
+      
+      if (!snap.snapshot.exists ) {
+        showSnack('User not found', context);
+        print('object');
+      } else {
+        var value = snap.snapshot;
+        showSnack('UserFOund', context);
+        print(value.children.first.key);
+      }
+      
+      // Do something with the results
+    });
+  } catch (r) {
+    showSnack('User not found', context);
+    print('object');
+  }
 }

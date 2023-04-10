@@ -38,13 +38,16 @@ class _HomeState extends State<Home> {
     // user.auth.currentUser?.updateDisplayName("Gopal S");
     // user.auth.currentUser?.updatePhoneNumber("+917592806009" as PhoneAuthCredential);
     super.initState();
+
     pagecontroller = PageController();
     _widgetOptions = [home(), community(), profile()];
   }
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: this._scaffoldKey,
         appBar: AppBar(
           leading: IconButton(
             icon: Icon(Icons.logout),
@@ -56,10 +59,10 @@ class _HomeState extends State<Home> {
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add),
             onPressed: () {
-              _scaffoldKey
-              .currentState
-              ?.showBottomSheet(
-                   (ctx) => buildBottomSheet(ctx));
+              this
+                  ._scaffoldKey
+                  .currentState
+                  ?.showBottomSheet((ctx) => buildBottomSheet(ctx));
             }),
         //bottomNavigationBar: BottomNavBarCurvedFb1() ,//Remember to add extendBody: true to scaffold!,
         bottomNavigationBar: GNav(
@@ -75,9 +78,7 @@ class _HomeState extends State<Home> {
               GButton(
                 icon: Icons.search,
                 text: 'Search',
-                onPressed: () {
-                  debugDB();
-                },
+                onPressed: () {},
               ),
               GButton(
                 icon: Icons.person,
@@ -232,13 +233,22 @@ class _ChatContainerState extends State<ChatContainer> {
 }
 
 Container buildBottomSheet(BuildContext ctx) {
+  TextEditingController txt = TextEditingController();
   return Container(
+    // color: Colors.red,
     height: 300,
-    padding:EdgeInsets.all(50),
+    padding: EdgeInsets.all(50),
     child: ListView(
       children: [
-        TextField(),
-        OutlinedButton(
+        TextField(
+            controller: txt,
+            decoration: InputDecoration(
+                suffix: IconButton(
+                    onPressed: () {
+                      addConncetion(txt.text, ctx);
+                    },
+                    icon: Icon(Icons.search)))),
+        TextButton(
             onPressed: () {
               Navigator.pop(ctx);
             },

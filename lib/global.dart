@@ -89,3 +89,17 @@ late DatabaseReference databaseReference;
 void setDB() {
   databaseReference =FirebaseDatabase.instance.ref();
 }
+ void showSnack(content, context) {
+    var snackbar = SnackBar(
+      backgroundColor: Colors.black,
+      content: Text(
+        content,
+        style: TextStyle(color: Colors.white),
+      ),
+      action: SnackBarAction(
+        label: 'ok',
+        onPressed: () {},
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+  }
