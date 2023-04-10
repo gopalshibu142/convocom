@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UI {
   var w;
@@ -87,19 +88,25 @@ String randomString() {
 late User curuser;
 late DatabaseReference databaseReference;
 void setDB() {
-  databaseReference =FirebaseDatabase.instance.ref();
+  databaseReference = FirebaseDatabase.instance.ref();
 }
- void showSnack(content, context) {
-    var snackbar = SnackBar(
-      backgroundColor: Colors.black,
-      content: Text(
-        content,
-        style: TextStyle(color: Colors.white),
-      ),
-      action: SnackBarAction(
-        label: 'ok',
-        onPressed: () {},
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackbar);
-  }
+
+void showSnack(content, context) {
+  var snackbar = SnackBar(
+    backgroundColor: Colors.black,
+    content: Text(
+      content,
+      style: TextStyle(color: Colors.white),
+    ),
+    action: SnackBarAction(
+      label: 'ok',
+      onPressed: () {},
+    ),
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackbar);
+}
+
+FirebaseFirestore cloud = FirebaseFirestore.instance;
+
+var curr_msgid = '';
+Map user_message ={};

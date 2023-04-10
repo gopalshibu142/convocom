@@ -34,11 +34,11 @@ class _HomeState extends State<Home> {
   _HomeState(user) {
     this.user = user;
   }
+  late List people;
   void initState() {
     // user.auth.currentUser?.updateDisplayName("Gopal S");
     // user.auth.currentUser?.updatePhoneNumber("+917592806009" as PhoneAuthCredential);
     super.initState();
-
     pagecontroller = PageController();
     _widgetOptions = [home(), community(), profile()];
   }
@@ -101,33 +101,41 @@ class _HomeState extends State<Home> {
         ));
   }
 
-  List items = ['Kallu', 'Shravan', 'Adhi'];
   Container home() => Container(
       color: Colors.black,
       height: double.infinity,
-      child: ListView.builder(
-          itemCount: items.length,
-          itemBuilder: (BuildContext context, int index) {
-            // access element from list using index
-            // you can create and return a widget of your choice
-            return Container(
-              alignment: Alignment.center,
-              height: 100,
-              width: double.infinity,
-              child: ListTile(
-                leading:
-                    CircleAvatar(backgroundColor: Colors.red, maxRadius: 50),
-                title: Text(items[index]),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            ChatContainer(name: items[index])),
-                  );
-                },
-              ),
-            );
+      child: FutureBuilder(
+          future: getPeoplelist(),
+          builder: (context, snapshot) {
+            people = snapshot.data??[];
+            if (snapshot.hasData) {
+              return ListView.builder(
+                  itemCount: people.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    // access element from list using index
+                    // you can create and return a widget of your choice
+                    return Container(
+                      alignment: Alignment.center,
+                      height: 100,
+                      width: double.infinity,
+                      child: ListTile(
+                        leading: CircleAvatar(
+                            backgroundColor: Colors.red, maxRadius: 50),
+                        title: Text(people[index]),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ChatContainer(name: people[index])),
+                          );
+                        },
+                      ),
+                    );
+                  });
+            } else {
+              return CircularProgressIndicator();
+            }
           }));
 
   Container community() => Container();
@@ -218,17 +226,8 @@ class _ChatContainerState extends State<ChatContainer> {
               .replaceAll(' ', '')
         });
     //print(DateTime.now().toString().replaceAll(':', '').replaceAll('.', '').replaceAll('-', '').replaceAll(' '', ''));
-
+    addMessagetoDB(textMessage);
     _addMessage(textMessage);
-    print((double.parse(DateTime.now()
-                .toString()
-                .replaceAll(':', '')
-                .replaceAll('.', '')
-                .replaceAll('-', '')
-                .replaceAll(' ', '')) /
-            10000)
-        .floor()
-        .toInt());
   }
 }
 

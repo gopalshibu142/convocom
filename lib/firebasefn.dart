@@ -17,6 +17,8 @@ import 'package:flutter/material.dart';
 //import 'package:firebase_database/firebase_database.dart';
 import 'package:quickalert/quickalert.dart';
 //import 'firebase_real';
+import 'package:cloud_firestore/cloud_firestore.dart' as store;
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class UserDetails {
   //Credential crd;
@@ -224,22 +226,54 @@ void debugDB() {
   });
 }
 
-void addConncetion(String email, context) {
+void addConncetion(String email, context) async {
   try {
+    databaseReference.child('test2').set({});
+    bool haschild = false;
     DatabaseReference usersRef = FirebaseDatabase.instance.ref().child('users');
-    Query query =
-        usersRef.orderByChild('email').equalTo(email);
-    query.once().then((snap) {
-      
-      if (!snap.snapshot.exists ) {
+    Query query = usersRef.orderByChild('email').equalTo(email);
+    query.once().then((snap) async {
+      if (!snap.snapshot.exists) {
         showSnack('User not found', context);
         print('object');
       } else {
         var value = snap.snapshot;
-        showSnack('UserFOund', context);
-        print(value.children.first.key);
+        databaseReference.child('users').child('people').once().then((snap) {
+          haschild =
+              snap.snapshot.hasChild(value.children.first.key.toString());
+          print(haschild);
+          print(snap.snapshot.children);
+        });
+        if (!haschild) {
+          showSnack(
+              " ${value.children.first.child('name').value} has been added",
+              context);
+          print(value.children.first.key);
+          var con_name = randomString();
+          await FirebaseDatabase.instance
+              .ref()
+              .child('connections')
+              .update({con_name: 'active'});
+          await databaseReference
+              .child('users')
+              .child(curuser.uid)
+              .child('people')
+              .update({value.children.first.key.toString(): con_name});
+          await databaseReference
+              .child('users')
+              .child(value.children.first.key.toString())
+              .child('people')
+              .update({curuser.uid: con_name}).then((rec) {
+            print('object');
+          });
+          cloud.collection(con_name).add({});
+        } else {
+          showSnack(
+              "User name: ${value.children.first.child('name').value} already added",
+              context);
+        }
       }
-      
+
       // Do something with the results
     });
   } catch (r) {
@@ -247,3 +281,45 @@ void addConncetion(String email, context) {
     print('object');
   }
 }
+
+Future<List> getPeoplelist() async {
+  print('called');
+  List people = [];
+  List peopleID = [];
+  List msgID = [];
+  await databaseReference
+      .child('users')
+      .child(curuser.uid)
+      .child('people')
+      .once()
+      .then((value) {
+    value.snapshot.children.forEach((element) {
+      print(element);
+      //print(value.snapshot.value);
+      value.snapshot.children.forEach((element) {
+        if(!peopleID.contains(element.key))
+        peopleID.add(element.key);
+        msgID.add(element.value);
+      });
+    });
+    //print(peopleID[0]);
+  });
+
+  // print(peopleID);
+  for (int i = 0; i < peopleID.length; i++) {
+    var element = peopleID[i].toString();
+    //print(element);
+    await databaseReference
+        .child('users')
+        .child(element.toString())
+        .child('name')
+        .once()
+        .then((value) {
+      // print(value.snapshot.value);
+      people.add(value.snapshot.value);
+    });
+  }
+  return people;
+}
+
+void addMessagetoDB(types.TextMessage message) {}
