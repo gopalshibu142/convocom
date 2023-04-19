@@ -1,4 +1,4 @@
-import 'dart:ffi';
+//import 'dart:js';
 
 import 'package:convocom/firebasefn.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +44,35 @@ class _HomeState extends State<Home> {
     pagecontroller = PageController();
     _widgetOptions = [home(), community(), profile()];
   }
+  Container buildBottomSheet(BuildContext parent,
+    BuildContext ctx, GlobalKey<ScaffoldState> scaffold) {
+  TextEditingController txt = TextEditingController();
+  return Container(
+    // color: Colors.red,
+    height: 300,
+    padding: EdgeInsets.all(50),
+    child: ListView(
+      children: [
+        TextField(
+            controller: txt,
+            decoration: InputDecoration(
+                suffix: IconButton(
+                    onPressed: () async {
+                      await addConncetion(txt.text, ctx);
+                      setState(() {
+                        
+                      });
+                    },
+                    icon: Icon(Icons.search)))),
+        TextButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+            },
+            child: Text('Close'))
+      ],
+    ),
+  );
+}
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
@@ -63,7 +92,7 @@ class _HomeState extends State<Home> {
             onPressed: () {
               setState(() {
                 this._scaffoldKey.currentState?.showBottomSheet(
-                    (ctx) => buildBottomSheet(ctx, _scaffoldKey));
+                    (ctx) => buildBottomSheet(context,ctx, _scaffoldKey));
               });
             }),
         //bottomNavigationBar: BottomNavBarCurvedFb1() ,//Remember to add extendBody: true to scaffold!,
@@ -113,6 +142,7 @@ class _HomeState extends State<Home> {
           builder: (context, snapshot) {
             people = snapshot.data ?? [];
             if (snapshot.hasData) {
+              print(people.length);
               return ListView.builder(
                   itemCount: people.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -128,7 +158,6 @@ class _HomeState extends State<Home> {
                           backgroundColor: Colors.grey,
                           maxRadius: 50,
                           child: LottieBuilder.asset(
-                            
                             'assets/avatar.json',
                             fit: BoxFit.fill,
                           ),
@@ -158,7 +187,7 @@ class _HomeState extends State<Home> {
                   highlightColor: Color.fromARGB(255, 0, 0, 0),
                   child: ListView(
                     children: [
-                      for (int i = 0; i <= 10;i++)
+                      for (int i = 0; i <= 10; i++)
                         Container(
                           height: 100,
                           alignment: Alignment.center,
@@ -230,10 +259,11 @@ class _ChatContainerState extends State<ChatContainer> {
   void initState() {
     dbref = FirebaseDatabase.instance.ref();
     dbref.child('messages').child(convID).onValue.listen((event) async {
-      setState(() async {
+      _messages = await getMessage(name);
+      setState(()  {
         print(event.snapshot.value);
         print('object');
-        _messages = await getMessage(name);
+        
       });
     });
     // TODO: implement initState
@@ -284,30 +314,3 @@ class _ChatContainerState extends State<ChatContainer> {
   }
 }
 
-Container buildBottomSheet(
-    BuildContext ctx, GlobalKey<ScaffoldState> scaffold) {
-  TextEditingController txt = TextEditingController();
-  return Container(
-    // color: Colors.red,
-    height: 300,
-    padding: EdgeInsets.all(50),
-    child: ListView(
-      children: [
-        TextField(
-            controller: txt,
-            decoration: InputDecoration(
-                suffix: IconButton(
-                    onPressed: () async {
-                      addConncetion(txt.text, ctx);
-                      scaffold.currentState?.setState(() {});
-                    },
-                    icon: Icon(Icons.search)))),
-        TextButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-            },
-            child: Text('Close'))
-      ],
-    ),
-  );
-}

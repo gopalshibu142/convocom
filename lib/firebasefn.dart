@@ -226,7 +226,7 @@ void debugDB() {
   });
 }
 
-void addConncetion(String email, context) async {
+Future addConncetion(String email, context) async {
   try {
     databaseReference.child('test2').set({});
     bool haschild = false;
@@ -283,7 +283,7 @@ void addConncetion(String email, context) async {
 }
 
 Future<List> getPeoplelist() async {
-  // print('called');
+  
   List people = [];
   List peopleID = [];
   List msgID = [];
@@ -294,8 +294,11 @@ Future<List> getPeoplelist() async {
       .child('people')
       .once()
       .then((value) {
+         //  print('called');
+    print(value.snapshot.children);
     value.snapshot.children.forEach((element) {
       // print(element);
+      
       //print(value.snapshot.value);
       value.snapshot.children.forEach((element) {
         if (!peopleID.contains(element.key)) peopleID.add(element.key);
@@ -309,6 +312,7 @@ Future<List> getPeoplelist() async {
   for (int i = 0; i < peopleID.length; i++) {
     var element = peopleID[i].toString();
     //print(element);
+    
     await databaseReference
         .child('users')
         .child(element.toString())
@@ -318,6 +322,7 @@ Future<List> getPeoplelist() async {
       // print(value.snapshot.value);
       people.add(value.snapshot.value);
       mapname_id.addAll({value.snapshot.value: element});
+      
     });
     //print(mapname_id);
   }
@@ -368,12 +373,9 @@ Future<List<types.TextMessage>> getMessage(name) async {
           id: element.key ?? '',
           text: element.child('text').value.toString(),
           createdAt: int.parse(element.child('createdAt').value.toString()));
-      msgs.insert(0,msg);
+      msgs.insert(0, msg);
       //msgs = msgs.reversed.toList();
-      
     });
   });
   return msgs;
 }
-
-
