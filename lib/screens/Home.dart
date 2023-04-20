@@ -12,7 +12,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
-
+import 'chatpage.dart';
 //import 'package:convocom/bricks/Widgets Example/bottom_nav_bar_curved.dart';
 
 class Home extends StatefulWidget {
@@ -110,7 +110,7 @@ class _HomeState extends State<Home> {
                 icon: Icons.search,
                 text: 'Search',
                 onPressed: () {
-                  getMessage('Shravan ');
+                  
                 },
               ),
               GButton(
@@ -157,10 +157,7 @@ class _HomeState extends State<Home> {
                           minRadius: 49,
                           backgroundColor: Colors.grey,
                           maxRadius: 50,
-                          child: LottieBuilder.asset(
-                            'assets/avatar.json',
-                            fit: BoxFit.fill,
-                          ),
+                          child: Icon(Icons.person,)
                         ),
                         title: Text(people[index]),
                         onTap: () async {
@@ -233,79 +230,6 @@ class _HomeState extends State<Home> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-}
-
-class ChatContainer extends StatefulWidget {
-  var name, messages;
-  ChatContainer({super.key, required this.name, required this.messages});
-
-  @override
-  State<ChatContainer> createState() =>
-      _ChatContainerState(this.name, this.messages);
-}
-
-class _ChatContainerState extends State<ChatContainer> {
-  var name;
-  _ChatContainerState(this.name, this._messages);
-  late DatabaseReference dbref;
-
-  @override
-  void initState() {
-    dbref = FirebaseDatabase.instance.ref();
-    dbref.child('messages').child(convID).onValue.listen((event) async {
-      _messages = await getMessage(name);
-      setState(()  {
-        print(event.snapshot.value);
-        print('object');
-        
-      });
-    });
-    // TODO: implement initState
-    super.initState();
-  }
-
-  List<types.Message> _messages;
-  final _user = types.User(id: curuser.uid);
-  //final _notuser = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3bc');
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
-        title: Text(name),
-      ),
-      body: Chat(
-        theme: DarkChatTheme(),
-        messages: _messages,
-        onSendPressed: _handleSendPressed,
-        user: _user,
-      ),
-    );
-  }
-
-  void _addMessage(types.Message message) {
-    setState(() {
-      _messages.insert(0, message);
-      print(message.updatedAt);
-    });
-  }
-
-  void _handleSendPressed(types.PartialText message) {
-    final textMessage = types.TextMessage(
-      author: _user,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      id: randomString(),
-      text: message.text,
-    );
-    //print(DateTime.now().toString().replaceAll(':', '').replaceAll('.', '').replaceAll('-', '').replaceAll(' '', ''));
-    addMessagetoDB(textMessage, name);
-    _addMessage(textMessage);
   }
 
   @override

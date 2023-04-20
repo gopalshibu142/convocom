@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:lottie/lottie.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:quickalert/models/quickalert_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:toast/toast.dart';
@@ -93,7 +94,10 @@ class UserDetails {
   Future signInWithEmailAndPassword(
       {required email, required password, required context}) async {
     try {
-      QuickAlert.show(context: context, type: QuickAlertType.loading);
+      QuickAlert.show(context: context, type: QuickAlertType.loading
+      
+      );
+      
       final User? user = (await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -109,13 +113,14 @@ class UserDetails {
           prefs.setBool('issignedin', true);
           prefs.setString('useremail', email);
           prefs.setString('userpass', password);
-          debugPrint("helloworld");
+         // debugPrint("helloworld");
           Navigator.pushReplacementNamed(context, '/home');
         }
       } else {
         success = false;
       }
     } on FirebaseAuthException catch (e) {
+      QuickAlert.show(context: context, type: QuickAlertType.error);
       Vibration.vibrate();
       error = e.toString();
       showSnack(error, context);
@@ -129,13 +134,14 @@ class UserDetails {
       backgroundColor: Colors.black,
       context: context,
       type: QuickAlertType.confirm,
+
       animType: QuickAlertAnimType.slideInUp,
       //widget: Lottie.asset('assets/warning.json'),
       text: 'Do you want to logout',
       confirmBtnText: 'Yes',
       cancelBtnText: 'No',
       confirmBtnColor: Colors.green,
-
+      textColor: Colors.white,
       onConfirmBtnTap: () async {
         auth.signOut();
         Navigator.pushReplacementNamed(context, '/login');
