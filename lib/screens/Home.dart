@@ -30,6 +30,7 @@ class _HomeState extends State<Home> {
   late List<Widget> _widgetOptions;
   late PageController pagecontroller;
   var temp = 50.0;
+  UIColor theme = UIColor();
   int _selectedIndex = 0;
   @override
   var usermail;
@@ -44,35 +45,34 @@ class _HomeState extends State<Home> {
     pagecontroller = PageController();
     _widgetOptions = [home(), community(), profile()];
   }
-  Container buildBottomSheet(BuildContext parent,
-    BuildContext ctx, GlobalKey<ScaffoldState> scaffold) {
-  TextEditingController txt = TextEditingController();
-  return Container(
-    // color: Colors.red,
-    height: 300,
-    padding: EdgeInsets.all(50),
-    child: ListView(
-      children: [
-        TextField(
-            controller: txt,
-            decoration: InputDecoration(
-                suffix: IconButton(
-                    onPressed: () async {
-                      await addConncetion(txt.text, ctx);
-                      setState(() {
-                        
-                      });
-                    },
-                    icon: Icon(Icons.search)))),
-        TextButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-            },
-            child: Text('Close'))
-      ],
-    ),
-  );
-}
+
+  Container buildBottomSheet(BuildContext parent, BuildContext ctx,
+      GlobalKey<ScaffoldState> scaffold) {
+    TextEditingController txt = TextEditingController();
+    return Container(
+      // color: Colors.red,
+      height: 300,
+      padding: EdgeInsets.all(50),
+      child: ListView(
+        children: [
+          TextField(
+              controller: txt,
+              decoration: InputDecoration(
+                  suffix: IconButton(
+                      onPressed: () async {
+                        await addConncetion(txt.text, ctx);
+                        setState(() {});
+                      },
+                      icon: Icon(Icons.search)))),
+          TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+              child: Text('Close'))
+        ],
+      ),
+    );
+  }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
@@ -80,6 +80,11 @@ class _HomeState extends State<Home> {
     return Scaffold(
         key: this._scaffoldKey,
         appBar: AppBar(
+          title: Text(
+            'Convocom',
+            style: GoogleFonts.roboto(),
+          ),
+          backgroundColor: theme.lvl1,
           leading: IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
@@ -92,7 +97,7 @@ class _HomeState extends State<Home> {
             onPressed: () {
               setState(() {
                 this._scaffoldKey.currentState?.showBottomSheet(
-                    (ctx) => buildBottomSheet(context,ctx, _scaffoldKey));
+                    (ctx) => buildBottomSheet(context, ctx, _scaffoldKey));
               });
             }),
         //bottomNavigationBar: BottomNavBarCurvedFb1() ,//Remember to add extendBody: true to scaffold!,
@@ -100,7 +105,7 @@ class _HomeState extends State<Home> {
             //rippleColor: Colors.grey[300]!,
             // hoverColor: Colors.grey[100]!,
             selectedIndex: _selectedIndex,
-            backgroundColor: Colors.black,
+            backgroundColor: theme.lvl1,
             tabs: [
               GButton(
                 icon: Icons.home,
@@ -109,9 +114,7 @@ class _HomeState extends State<Home> {
               GButton(
                 icon: Icons.search,
                 text: 'Search',
-                onPressed: () {
-                  
-                },
+                onPressed: () {},
               ),
               GButton(
                 icon: Icons.person,
@@ -135,7 +138,7 @@ class _HomeState extends State<Home> {
   }
 
   Container home() => Container(
-      color: Colors.black,
+      color: Color(0xff03001C),
       height: double.infinity,
       child: FutureBuilder(
           future: getPeoplelist(),
@@ -149,16 +152,26 @@ class _HomeState extends State<Home> {
                     // access element from list using index
                     // you can create and return a widget of your choice
                     return Container(
+                      decoration: BoxDecoration(
+                          //color: Color(0xff03001C),
+                          border: Border(
+                              top: BorderSide(
+                                color: Colors.black38,
+                              ),
+                              bottom: BorderSide(
+                                  // style: BorderStyle.solid,
+                                  color: Colors.black38))),
                       alignment: Alignment.center,
                       height: 100,
                       width: double.infinity,
                       child: ListTile(
                         leading: CircleAvatar(
-                          minRadius: 49,
-                          backgroundColor: Colors.grey,
-                          maxRadius: 50,
-                          child: Icon(Icons.person,)
-                        ),
+                            minRadius: 49,
+                            backgroundColor: Colors.grey,
+                            maxRadius: 60,
+                            child: Icon(
+                              Icons.person,
+                            )),
                         title: Text(people[index]),
                         onTap: () async {
                           var messages = await getMessage(people[index]);
@@ -202,9 +215,12 @@ class _HomeState extends State<Home> {
             }
           }));
 
-  Container community() => Container();
+  Container community() => Container(
+        color: theme.lvl0,
+      );
   Widget profile() {
     return Container(
+      color: Color(0xff03001C),
       padding: EdgeInsets.only(top: 20),
       child: Column(
         children: [
@@ -213,7 +229,7 @@ class _HomeState extends State<Home> {
             backgroundColor: Colors.green,
             child: CircleAvatar(
               radius: 80,
-              backgroundColor: Colors.black,
+              backgroundColor: theme.lvl1,
               child: Icon(
                 FontAwesomeIcons.userPlus,
                 size: 100,
@@ -237,4 +253,3 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 }
-

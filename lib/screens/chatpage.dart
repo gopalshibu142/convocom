@@ -18,7 +18,7 @@ class _ChatContainerState extends State<ChatContainer> {
   var name;
   _ChatContainerState(this.name, this._messages);
   late DatabaseReference dbref;
-
+  UIColor theme = UIColor();
   @override
   void initState() {
     dbref = FirebaseDatabase.instance.ref();
@@ -40,11 +40,15 @@ class _ChatContainerState extends State<ChatContainer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: theme.lvl1,
         title: Text(name),
       ),
       body: Chat(
-        theme: DarkChatTheme(),
+        theme: DarkChatTheme(
+          backgroundColor: theme.lvl0,
+          primaryColor: theme.lvl2,
+          secondaryColor: theme.lvl1
+        ),
         messages: _messages,
         onSendPressed: _handleSendPressed,
         user: _user,

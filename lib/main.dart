@@ -55,7 +55,9 @@ class _MyappState extends State<Myapp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "convocom : let's blaber",
-      theme: ThemeData.dark(),
+      theme: ThemeData.dark(
+        useMaterial3: true
+      ),
       initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.

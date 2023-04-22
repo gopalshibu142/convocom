@@ -14,21 +14,12 @@ class UI {
     'assets/bg1.json',
     'assets/bg2.json',
     'assets/bg3.json',
-    'assets/bg7.json',
-    'assets/bg8.json',
-    'assets/bg9.json'
   ];
   //var colorlogin = [Colors.white, Colors.black];
   var background;
   late Color clrlog;
+  late Color txt;
   late int rn;
-
-  void changeBG() {
-    rn++;
-    if (rn > 4) rn = 0;
-    this.background = backgrounds[rn];
-    this.clrlog = rn == 0 ? Colors.white : Colors.black;
-  }
 
   UI(context) {
     // w = MediaQuery.of(context).size.width;
@@ -39,9 +30,16 @@ class UI {
 
 // generate a random index based on the list length
 // and use it to retrieve the element
-    this.background = backgrounds[rn];
-    this.clrlog = rn == 0 ? Colors.white : Colors.black;
+    this.clrlog = Colors.white;
+    this.txt = Colors.blue;
   }
+}
+
+class UIColor {
+  Color lvl0 = Color(0xff03001C);
+  Color lvl1 = Color(0xff301E67);
+  Color lvl2 = Color(0xff5B8FB9);
+  Color lvl3 = Color(0xffB6EADA);
 }
 
 class LoginDetails {

@@ -8,8 +8,10 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:lottie/lottie.dart';
 import 'package:convocom/firebasefn.dart';
-
+import 'background.dart';
 import 'package:convocom/global.dart';
+import 'dart:math';
+
 //import 'package:convocom/bricks/Widgets Example/bottom_nav_bar_curved.dart';
 class Login extends StatefulWidget {
   late UserDetails user;
@@ -27,8 +29,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   //var h, w;
   _LoginState(user) {
     this.user = user;
-    
   }
+  late AnimationController _controller;
+  List<Circle> _circles = [];
   late FlipCardController flipcontroller;
   var obsecure = true;
   var titleop = 1.0;
@@ -37,8 +40,34 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   Alignment titlealign = Alignment.center;
   late UI gui;
   @override
-  void initState() {
-    super.initState();
+  Future<void> _initializeState() async {
+    // Initialize state here
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    )..repeat();
+
+    _controller.addListener(() {
+      setState(() {
+        _circles.forEach((circle) {
+          circle.move(MediaQuery.of(context).size);
+        });
+      });
+    });
+
+    if (_circles.length < 50) {
+      for (int i = 0; i < 2; i++) {
+        _circles.add(
+          Circle(
+            position: _getRandomPosition(),
+            radius: Random().nextDouble() * 50 + 10,
+            color: _getRandomColor(),
+            dx: Random().nextDouble() *0.1*(Random().nextBool()?-1:1),
+            dy: Random().nextDouble() *0.1,
+          ),
+        );
+      }
+    }
     gui = UI(context);
     flipcontroller = FlipCardController();
     Future.delayed(Duration(seconds: 2), (() {
@@ -53,57 +82,87 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     }));
   }
 
+  void initState() {
+    super.initState();
+    _initializeState();
+  }
+
+  Offset _getRandomPosition() {
+    Size size = MediaQuery.of(context).size;
+    double x = Random().nextDouble() * size.width;
+    double y = Random().nextDouble() * size.height;
+    return Offset(x, y);
+  }
+
+  Color _getRandomColor() {
+    return Color.fromRGBO(
+      Random().nextInt(255),
+      Random().nextInt(255),
+      Random().nextInt(255),
+      0.5,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    var h=MediaQuery.of(context).size.height;
-    var w=MediaQuery.of(context).size.width;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        child: Stack(
-          children: [
-            Container(
-                //height: double.infinity,
-                width: double.infinity,
-                height: double.infinity,
-                child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        gui.changeBG();
-                      });
+    var h = MediaQuery.of(context).size.height;
+    var w = MediaQuery.of(context).size.width;
+    return FutureBuilder(
+        future: _initializeState(),
+        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+          return Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: Container(
+              child: Stack(
+                children: [
+                  Container(
+                    //height: double.infinity,
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: CustomPaint(
+                      painter: CirclePainter(_circles),
+                      child: Container(),
+                    ),
+                    // child: GestureDetector(
+                    //     onTap: () {
+                    //       setState(() {
+                    //         gui.changeBG();
+                    //       });
 
-                      //debugPrint(gui.background);
-                    },
-                    child:h/w>1.2? Lottie.asset(gui.background, fit: BoxFit.fill):
-                    Lottie.asset('assets/bgwide1.json', fit: BoxFit.fill))),
-            AnimatedOpacity(
-              opacity: titleop,
-              duration: Duration(milliseconds: 500),
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 1000),
-                padding: EdgeInsets.only(top: 80),
-                alignment: titlealign,
-                child: Text("CONVOCOM",
-                    style: GoogleFonts.permanentMarker(
-                        color: gui.clrlog, fontSize: 38)),
+                    //       //debugPrint(gui.background);
+                    //     },
+                    //     child:h/w>1.2? Lottie.asset(gui.background, fit: BoxFit.fill):
+                    //     Lottie.asset('assets/bgwide1.json', fit: BoxFit.fill))
+                  ),
+                  AnimatedOpacity(
+                    opacity: titleop,
+                    duration: Duration(milliseconds: 500),
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 1000),
+                      padding: EdgeInsets.only(top: 80),
+                      alignment: titlealign,
+                      child: Text("CONVOCOM",
+                          style: GoogleFonts.permanentMarker(
+                              color: gui.clrlog, fontSize: 38)),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.bottomCenter,
+                    child: FlipCard(
+                        flipOnTouch: false,
+                        onFlip: () {},
+                        controller: flipcontroller,
+                        front: loginPage(),
+                        back: signupPage()),
+                  ),
+                  SizedBox(
+                    height: 50,
+                  )
+                ],
               ),
             ),
-            Container(
-              alignment: Alignment.bottomCenter,
-              child: FlipCard(
-                  flipOnTouch: false,
-                  onFlip: () {},
-                  controller: flipcontroller,
-                  front: loginPage(),
-                  back: signupPage()),
-            ),
-            SizedBox(
-              height: 50,
-            )
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 
   AnimatedOpacity loginPage() {
@@ -127,7 +186,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 1,
               ]),
           border: 2,
-          blur: 1.2,
+          blur: 1.5,
           borderGradient: LinearGradient(
               begin: Alignment.bottomRight,
               end: Alignment.topLeft,
@@ -237,7 +296,10 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                               email: logindetails.loginemail.control.text,
                               context: context);
                         },
-                        child: Text("forgot password?")),
+                        child: Text(
+                          "forgot password?",
+                          style: TextStyle(color: gui.txt),
+                        )),
                     OutlinedButton(
                       onPressed: () async {
                         await user.signInWithEmailAndPassword(
@@ -276,7 +338,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         },
                         child: Text(
                           "Sign up",
-                          style: GoogleFonts.roboto(fontSize: 18),
+                          style: GoogleFonts.roboto(
+                              fontSize: 18, color: Colors.blueAccent),
                         ),
                       ),
                     )
@@ -603,10 +666,10 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       ),
     );
   }
-  
 
   @override
   void dispose() {
     super.dispose();
+    _controller.dispose();
   }
 }
