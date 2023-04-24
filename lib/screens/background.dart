@@ -1,8 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
-
-
 class Circle {
   Offset position;
   double radius;
@@ -10,18 +8,25 @@ class Circle {
   double dx;
   double dy;
 
-  Circle({required this.position, required this.radius, required this.color, required this.dx, required this.dy});
+  Circle(
+      {required this.position,
+      required this.radius,
+      required this.color,
+      required this.dx,
+      required this.dy});
 
   void move(Size size) {
-    position = Offset(position.dx + dx*0.05, position.dy + dy*0.05);
-    if (position.dx - radius < 0 || position.dx + radius > size.width) {
+    
+    if (position.dx - radius <= 0 || position.dx + radius >= size.width) {
       dx = -dx;
     }
-    if (position.dy - radius < 0 || position.dy + radius > size.height) {
+    if (position.dy - radius <= 0 || position.dy + radius >= size.height) {
       dy = -dy;
     }
+    position = Offset(position.dx + dx / 2, position.dy + dy / 2);
   }
 }
+
 class CirclePainter extends CustomPainter {
   final List<Circle> circles;
 
@@ -31,6 +36,7 @@ class CirclePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     for (Circle circle in circles) {
       Paint paint = Paint()..color = circle.color;
+
       canvas.drawCircle(circle.position, circle.radius, paint);
     }
   }

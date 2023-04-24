@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_background/animated_background.dart';
@@ -55,19 +57,25 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       });
     });
 
-    if (_circles.length < 50) {
-      for (int i = 0; i < 2; i++) {
+    if (_circles.length < 10) {
+      for (int i = 0; i <= 5; i++) {
         _circles.add(
           Circle(
             position: _getRandomPosition(),
-            radius: Random().nextDouble() * 50 + 10,
+            radius: Random().nextDouble() * 50 + 15,
             color: _getRandomColor(),
-            dx: Random().nextDouble() *0.1*(Random().nextBool()?-1:1),
-            dy: Random().nextDouble() *0.1,
+            dx: Random().nextDouble() * 0.005 * (Random().nextBool() ? -1 : 1),
+            dy: Random().nextDouble() * 0.005 * (Random().nextBool() ? -1 : 1),
           ),
         );
       }
     }
+    //Future.delayed(Duration(seconds: 10)).then((value) => _initializeState());
+  }
+@override
+  void initState() {
+    super.initState();
+    _initializeState();
     gui = UI(context);
     flipcontroller = FlipCardController();
     Future.delayed(Duration(seconds: 2), (() {
@@ -80,11 +88,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         });
       }));
     }));
-  }
-
-  void initState() {
-    super.initState();
-    _initializeState();
   }
 
   Offset _getRandomPosition() {
@@ -115,24 +118,32 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             body: Container(
               child: Stack(
                 children: [
-                  Container(
-                    //height: double.infinity,
-                    width: double.infinity,
-                    height: double.infinity,
-                    child: CustomPaint(
-                      painter: CirclePainter(_circles),
-                      child: Container(),
+                  BackdropFilter(
+                    blendMode: BlendMode.hardLight,
+                    filter: ImageFilter.blur(
+                      sigmaX: 25,
+                      sigmaY: 15
                     ),
-                    // child: GestureDetector(
-                    //     onTap: () {
-                    //       setState(() {
-                    //         gui.changeBG();
-                    //       });
+                    child: Container(
+                      color: Colors.black45,
+                      //height: double.infinity,
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: CustomPaint(
+                        painter: CirclePainter(_circles),
+                        //child: Container(),
+                      ),
+                      // child: GestureDetector(
+                      //     onTap: () {
+                      //       setState(() {
+                      //         gui.changeBG();
+                      //       });
 
-                    //       //debugPrint(gui.background);
-                    //     },
-                    //     child:h/w>1.2? Lottie.asset(gui.background, fit: BoxFit.fill):
-                    //     Lottie.asset('assets/bgwide1.json', fit: BoxFit.fill))
+                      //       //debugPrint(gui.background);
+                      //     },
+                      //     child:h/w>1.2? Lottie.asset(gui.background, fit: BoxFit.fill):
+                      //     Lottie.asset('assets/bgwide1.json', fit: BoxFit.fill))
+                    ),
                   ),
                   AnimatedOpacity(
                     opacity: titleop,
@@ -163,6 +174,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             ),
           );
         });
+    
   }
 
   AnimatedOpacity loginPage() {
