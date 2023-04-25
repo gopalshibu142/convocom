@@ -4,6 +4,7 @@ import 'package:convocom/firebasefn.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:convocom/global.dart';
+import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -86,7 +87,9 @@ class _HomeState extends State<Home> {
           ),
           backgroundColor: theme.lvl1,
           leading: IconButton(
-            icon: Icon(Icons.logout),
+            icon: CircleAvatar(
+              
+              child: Icon(Icons.person),),
             onPressed: () {
               user.signout(context);
             },
@@ -242,6 +245,14 @@ class _HomeState extends State<Home> {
           Text("email : ${user.auth.currentUser?.email}\n"),
           Text("name : ${user.auth.currentUser?.displayName}\n"),
           Text("phone : ${user.auth.currentUser?.phoneNumber}\n"),
+          TextButton(
+              onPressed: () {
+                user.signout(context);
+              },
+              child: Text(
+                'Logout',
+                style: TextStyle(color: theme.lvl3, fontSize: 18),
+              ))
           //Text("phone : ${user.auth.currentUser?.email}"),
         ],
       ),

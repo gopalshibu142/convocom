@@ -35,9 +35,11 @@ class _ChatContainerState extends State<ChatContainer> {
 
   List<types.Message> _messages;
   final _user = types.User(id: curuser.uid);
+  
   //final _notuser = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3bc');
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.lvl1,
@@ -70,6 +72,7 @@ class _ChatContainerState extends State<ChatContainer> {
       id: randomString(),
       text: message.text,
     );
+    
     //print(DateTime.now().toString().replaceAll(':', '').replaceAll('.', '').replaceAll('-', '').replaceAll(' '', ''));
     addMessagetoDB(textMessage, name);
     _addMessage(textMessage);

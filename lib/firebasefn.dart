@@ -107,7 +107,9 @@ class UserDetails {
       if (user != null) {
         success = true;
         userEmail = user.email.toString();
+        
         curuser = user;
+        
         if (success) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setBool('issignedin', true);

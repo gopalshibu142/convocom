@@ -47,7 +47,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     _controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: 1),
-    )..repeat();
+    )
+    ..repeat(period: Duration(milliseconds: 500));
 
     _controller.addListener(() {
       setState(() {
@@ -118,31 +119,34 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             body: Container(
               child: Stack(
                 children: [
-                  BackdropFilter(
-                    blendMode: BlendMode.hardLight,
-                    filter: ImageFilter.blur(
-                      sigmaX: 25,
-                      sigmaY: 15
-                    ),
-                    child: Container(
-                      color: Colors.black45,
-                      //height: double.infinity,
-                      width: double.infinity,
-                      height: double.infinity,
-                      child: CustomPaint(
-                        painter: CirclePainter(_circles),
-                        //child: Container(),
+                  Container(
+                    color:Color(0x22000000),
+                    child: BackdropFilter(
+                      blendMode: BlendMode.lighten,
+                      filter: ImageFilter.blur(
+                        sigmaX: 25,
+                        sigmaY: 15
                       ),
-                      // child: GestureDetector(
-                      //     onTap: () {
-                      //       setState(() {
-                      //         gui.changeBG();
-                      //       });
-
-                      //       //debugPrint(gui.background);
-                      //     },
-                      //     child:h/w>1.2? Lottie.asset(gui.background, fit: BoxFit.fill):
-                      //     Lottie.asset('assets/bgwide1.json', fit: BoxFit.fill))
+                      child: Container(
+                        color: Colors.black45,
+                        //height: double.infinity,
+                        width: double.infinity,
+                        height: double.infinity,
+                        child: CustomPaint(
+                          painter: CirclePainter(_circles),
+                          //child: Container(),
+                        ),
+                        // child: GestureDetector(
+                        //     onTap: () {
+                        //       setState(() {
+                        //         gui.changeBG();
+                        //       });
+                  
+                        //       //debugPrint(gui.background);
+                        //     },
+                        //     child:h/w>1.2? Lottie.asset(gui.background, fit: BoxFit.fill):
+                        //     Lottie.asset('assets/bgwide1.json', fit: BoxFit.fill))
+                      ),
                     ),
                   ),
                   AnimatedOpacity(
