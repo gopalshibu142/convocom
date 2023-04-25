@@ -55,10 +55,13 @@ class _HomeState extends State<Home> {
       height: 300,
       padding: EdgeInsets.all(50),
       child: ListView(
+        
         children: [
+          Text('Add User',textAlign: TextAlign.center,),
           TextField(
               controller: txt,
               decoration: InputDecoration(
+                hintText: 'Enter the email ',
                   suffix: IconButton(
                       onPressed: () async {
                         await addConncetion(txt.text, ctx);
@@ -86,21 +89,17 @@ class _HomeState extends State<Home> {
             style: GoogleFonts.roboto(),
           ),
           backgroundColor: theme.lvl1,
-          leading: IconButton(
-            icon: CircleAvatar(
-              
-              child: Icon(Icons.person),),
-            onPressed: () {
-              user.signout(context);
-            },
-          ),
+          leading: CircleAvatar(
+              child: Icon(Icons.person),
+            ),
         ),
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add),
             onPressed: () {
               setState(() {
-                this._scaffoldKey.currentState?.showBottomSheet(
+                var b = this._scaffoldKey.currentState?.showBottomSheet(
                     (ctx) => buildBottomSheet(context, ctx, _scaffoldKey));
+                b?.closed.then((value) => setState((){}));
               });
             }),
         //bottomNavigationBar: BottomNavBarCurvedFb1() ,//Remember to add extendBody: true to scaffold!,

@@ -245,18 +245,17 @@ Future addConncetion(String email, context) async {
         showSnack('User not found', context);
         print('object');
       } else {
-        var value = snap.snapshot;
-        databaseReference.child('users').child('people').once().then((snap) {
+        var value = await snap.snapshot;
+        databaseReference.child('users').child(curuser.uid).child('people').once().then((snap)async {
           haschild =
-              snap.snapshot.hasChild(value.children.first.key.toString());
+             await snap.snapshot.hasChild(value.children.first.key.toString());
           print(haschild);
-          print(snap.snapshot.children);
-        });
-        if (!haschild) {
+         // print(value.children.first.key.toString());
+         if (haschild ==false) {
           showSnack(
               " ${value.children.first.child('name').value} has been added",
               context);
-          print(value.children.first.key);
+         // print(value.children.first.key);
           var con_name = randomString();
           await FirebaseDatabase.instance
               .ref()
@@ -277,9 +276,11 @@ Future addConncetion(String email, context) async {
           cloud.collection(con_name).add({});
         } else {
           showSnack(
-              "User name: ${value.children.first.child('name').value} already added",
+              "User name: ${value.children.first.child('name').value} already exist in your connections",
               context);
         }
+        });
+        
       }
 
       // Do something with the results
@@ -339,7 +340,7 @@ Future<List> getPeoplelist() async {
 
 Future<String> getConvId(name) async {
   var receiverID = mapname_id[name];
-  var v;
+  //var v;
 
   var conId;
   await databaseReference
