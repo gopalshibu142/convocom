@@ -1,5 +1,6 @@
 //import 'dart:js';
 
+import 'dart:io';
 import 'package:convocom/firebasefn.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,6 +15,8 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 import 'chatpage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 //import 'package:convocom/bricks/Widgets Example/bottom_nav_bar_curved.dart';
 
 class Home extends StatefulWidget {
@@ -55,13 +58,15 @@ class _HomeState extends State<Home> {
       height: 300,
       padding: EdgeInsets.all(50),
       child: ListView(
-        
         children: [
-          Text('Add User',textAlign: TextAlign.center,),
+          Text(
+            'Add User',
+            textAlign: TextAlign.center,
+          ),
           TextField(
               controller: txt,
               decoration: InputDecoration(
-                hintText: 'Enter the email ',
+                  hintText: 'Enter the email ',
                   suffix: IconButton(
                       onPressed: () async {
                         await addConncetion(txt.text, ctx);
@@ -79,6 +84,7 @@ class _HomeState extends State<Home> {
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  File? _imageFile;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,8 +96,8 @@ class _HomeState extends State<Home> {
           ),
           backgroundColor: theme.lvl1,
           leading: CircleAvatar(
-              child: Icon(Icons.person),
-            ),
+            child: Icon(Icons.person),
+          ),
         ),
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add),
@@ -99,7 +105,7 @@ class _HomeState extends State<Home> {
               setState(() {
                 var b = this._scaffoldKey.currentState?.showBottomSheet(
                     (ctx) => buildBottomSheet(context, ctx, _scaffoldKey));
-                b?.closed.then((value) => setState((){}));
+                b?.closed.then((value) => setState(() {}));
               });
             }),
         //bottomNavigationBar: BottomNavBarCurvedFb1() ,//Remember to add extendBody: true to scaffold!,
@@ -110,12 +116,12 @@ class _HomeState extends State<Home> {
             backgroundColor: theme.lvl1,
             tabs: [
               GButton(
-                icon: Icons.home,
-                text: 'Home',
+                icon: Icons.message,
+                text: 'Chat',
               ),
               GButton(
-                icon: Icons.search,
-                text: 'Search',
+                icon: Icons.people,
+                text: 'Status',
                 onPressed: () {},
               ),
               GButton(
@@ -168,12 +174,11 @@ class _HomeState extends State<Home> {
                       width: double.infinity,
                       child: ListTile(
                         leading: CircleAvatar(
-                            minRadius: 49,
-                            backgroundColor: Colors.grey,
-                            maxRadius: 60,
-                            child: Icon(
-                              Icons.person,
-                            )),
+                          minRadius: 49,
+                          backgroundColor: Colors.grey,
+                          maxRadius: 60,
+                          backgroundImage: AssetImage('assets/person.png'),
+                        ),
                         title: Text(people[index]),
                         onTap: () async {
                           var messages = await getMessage(people[index]);
@@ -218,7 +223,11 @@ class _HomeState extends State<Home> {
           }));
 
   Container community() => Container(
+        height: double.infinity,
+        width: double.infinity,
+        alignment: Alignment.center,
         color: theme.lvl0,
+        child: Text('Coming soon'),
       );
   Widget profile() {
     return Container(
@@ -226,15 +235,28 @@ class _HomeState extends State<Home> {
       padding: EdgeInsets.only(top: 20),
       child: Column(
         children: [
-          CircleAvatar(
-            radius: 82,
-            backgroundColor: Colors.green,
+          GestureDetector(
+            onTap: () async {
+              var status = await Permission.photos.isGranted;
+              if (!status) {
+                await Permission.photos.request();
+                await Permission.storage.request();
+              }
+              final pickedFile =
+                  await ImagePicker().pickImage(source: ImageSource.gallery);
+              setState(() {
+                print(pickedFile!.path);
+                _imageFile = File(pickedFile!.path);
+              });
+            },
             child: CircleAvatar(
-              radius: 80,
-              backgroundColor: theme.lvl1,
-              child: Icon(
-                FontAwesomeIcons.userPlus,
-                size: 100,
+              radius: 82,
+              backgroundColor: theme.lvl2,
+              child: CircleAvatar(
+                radius: 80,
+                backgroundColor: theme.lvl1,
+                backgroundImage: _imageFile != null ? FileImage(_imageFile!) : Image.asset('assets/person.png').image,
+                
               ),
             ),
           ),
