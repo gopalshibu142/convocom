@@ -112,6 +112,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
     return FutureBuilder(
+      
         future: _initializeState(),
         builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
           return Scaffold(

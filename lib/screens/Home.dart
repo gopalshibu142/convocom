@@ -30,6 +30,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  late String url;
   late UserDetails user;
   late List<Widget> _widgetOptions;
   late PageController pagecontroller;
@@ -41,11 +42,16 @@ class _HomeState extends State<Home> {
   _HomeState(user) {
     this.user = user;
   }
+  Future<void> initialize() async {
+    url = await getProfileUrl(userId: curuser.uid);
+  }
+
   late List people;
   void initState() {
     // user.auth.currentUser?.updateDisplayName("Gopal S");
     // user.auth.currentUser?.updatePhoneNumber("+917592806009" as PhoneAuthCredential);
     super.initState();
+    initialize();
     pagecontroller = PageController();
     _widgetOptions = [home(), community(), profile()];
   }
@@ -233,49 +239,54 @@ class _HomeState extends State<Home> {
     return Container(
       color: Color(0xff03001C),
       padding: EdgeInsets.only(top: 20),
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: () async {
-              var status = await Permission.photos.isGranted;
-              if (!status) {
-                await Permission.photos.request();
-                await Permission.storage.request();
-              }
-              final pickedFile =
-                  await ImagePicker().pickImage(source: ImageSource.gallery);
-              setState(() {
-                print(pickedFile!.path);
-                _imageFile = File(pickedFile!.path);
-              });
-            },
-            child: CircleAvatar(
-              radius: 82,
-              backgroundColor: theme.lvl2,
-              child: CircleAvatar(
-                radius: 80,
-                backgroundColor: theme.lvl1,
-                backgroundImage: _imageFile != null ? FileImage(_imageFile!) : Image.asset('assets/person.png').image,
-                
+      child: Builder(
+        builder: (context) {
+          return Column(
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  var status = await Permission.photos.isGranted;
+                  if (!status) {
+                    await Permission.photos.request();
+                    await Permission.storage.request();
+                  }
+                  final pickedFile = await ImagePicker().pickImage(
+                    source: ImageSource.gallery,
+                  );
+                  setState(() {
+                    //print(pickedFile!.path);
+                    _imageFile = File(pickedFile!.path);
+                  });
+                  uploadProfile(_imageFile);
+                },
+                child: CircleAvatar(
+                  radius: 82,
+                  backgroundColor: theme.lvl2,
+                  child: CircleAvatar(
+                      radius: 80,
+                      backgroundColor: theme.lvl1,
+                      
+                      backgroundImage: NetworkImage(url)),
+                ),
               ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text("email : ${user.auth.currentUser?.email}\n"),
-          Text("name : ${user.auth.currentUser?.displayName}\n"),
-          Text("phone : ${user.auth.currentUser?.phoneNumber}\n"),
-          TextButton(
-              onPressed: () {
-                user.signout(context);
-              },
-              child: Text(
-                'Logout',
-                style: TextStyle(color: theme.lvl3, fontSize: 18),
-              ))
-          //Text("phone : ${user.auth.currentUser?.email}"),
-        ],
+              SizedBox(
+                height: 10,
+              ),
+              Text("email : ${user.auth.currentUser?.email}\n"),
+              Text("name : ${user.auth.currentUser?.displayName}\n"),
+              Text("phone : ${user.auth.currentUser?.phoneNumber}\n"),
+              TextButton(
+                  onPressed: () {
+                    user.signout(context);
+                  },
+                  child: Text(
+                    'Logout',
+                    style: TextStyle(color: theme.lvl3, fontSize: 18),
+                  ))
+              //Text("phone : ${user.auth.currentUser?.email}"),
+            ],
+          );
+        }
       ),
     );
   }

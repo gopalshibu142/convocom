@@ -3,7 +3,8 @@
 //import 'dart:js';
 
 import 'dart:convert';
-
+//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:convocom/global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -94,10 +95,8 @@ class UserDetails {
   Future signInWithEmailAndPassword(
       {required email, required password, required context}) async {
     try {
-      QuickAlert.show(context: context, type: QuickAlertType.loading
-      
-      );
-      
+      QuickAlert.show(context: context, type: QuickAlertType.loading);
+
       final User? user = (await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -107,15 +106,15 @@ class UserDetails {
       if (user != null) {
         success = true;
         userEmail = user.email.toString();
-        
+
         curuser = user;
-        
+
         if (success) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setBool('issignedin', true);
           prefs.setString('useremail', email);
           prefs.setString('userpass', password);
-         // debugPrint("helloworld");
+          // debugPrint("helloworld");
           Navigator.pushReplacementNamed(context, '/home');
         }
       } else {
@@ -246,41 +245,45 @@ Future addConncetion(String email, context) async {
         print('object');
       } else {
         var value = await snap.snapshot;
-        databaseReference.child('users').child(curuser.uid).child('people').once().then((snap)async {
+        databaseReference
+            .child('users')
+            .child(curuser.uid)
+            .child('people')
+            .once()
+            .then((snap) async {
           haschild =
-             await snap.snapshot.hasChild(value.children.first.key.toString());
+              await snap.snapshot.hasChild(value.children.first.key.toString());
           print(haschild);
-         // print(value.children.first.key.toString());
-         if (haschild ==false) {
-          showSnack(
-              " ${value.children.first.child('name').value} has been added",
-              context);
-         // print(value.children.first.key);
-          var con_name = randomString();
-          await FirebaseDatabase.instance
-              .ref()
-              .child('connections')
-              .update({con_name: 'active'});
-          await databaseReference
-              .child('users')
-              .child(curuser.uid)
-              .child('people')
-              .update({value.children.first.key.toString(): con_name});
-          await databaseReference
-              .child('users')
-              .child(value.children.first.key.toString())
-              .child('people')
-              .update({curuser.uid: con_name}).then((rec) {
-            print('object');
-          });
-          cloud.collection(con_name).add({});
-        } else {
-          showSnack(
-              "User name: ${value.children.first.child('name').value} already exist in your connections",
-              context);
-        }
+          // print(value.children.first.key.toString());
+          if (haschild == false) {
+            showSnack(
+                " ${value.children.first.child('name').value} has been added",
+                context);
+            // print(value.children.first.key);
+            var con_name = randomString();
+            await FirebaseDatabase.instance
+                .ref()
+                .child('connections')
+                .update({con_name: 'active'});
+            await databaseReference
+                .child('users')
+                .child(curuser.uid)
+                .child('people')
+                .update({value.children.first.key.toString(): con_name});
+            await databaseReference
+                .child('users')
+                .child(value.children.first.key.toString())
+                .child('people')
+                .update({curuser.uid: con_name}).then((rec) {
+              print('object');
+            });
+            cloud.collection(con_name).add({});
+          } else {
+            showSnack(
+                "User name: ${value.children.first.child('name').value} already exist in your connections",
+                context);
+          }
         });
-        
       }
 
       // Do something with the results
@@ -292,7 +295,6 @@ Future addConncetion(String email, context) async {
 }
 
 Future<List> getPeoplelist() async {
-  
   List people = [];
   List peopleID = [];
   List msgID = [];
@@ -303,11 +305,11 @@ Future<List> getPeoplelist() async {
       .child('people')
       .once()
       .then((value) {
-         //  print('called');
+    //  print('called');
     print(value.snapshot.children);
     value.snapshot.children.forEach((element) {
       // print(element);
-      
+
       //print(value.snapshot.value);
       value.snapshot.children.forEach((element) {
         if (!peopleID.contains(element.key)) peopleID.add(element.key);
@@ -321,7 +323,7 @@ Future<List> getPeoplelist() async {
   for (int i = 0; i < peopleID.length; i++) {
     var element = peopleID[i].toString();
     //print(element);
-    
+
     await databaseReference
         .child('users')
         .child(element.toString())
@@ -331,7 +333,6 @@ Future<List> getPeoplelist() async {
       // print(value.snapshot.value);
       people.add(value.snapshot.value);
       mapname_id.addAll({value.snapshot.value: element});
-      
     });
     //print(mapname_id);
   }
@@ -387,4 +388,34 @@ Future<List<types.TextMessage>> getMessage(name) async {
     });
   });
   return msgs;
+}
+
+void uploadProfile(image) async {
+  final storageRef = FirebaseStorage.instance
+      .ref()
+      .child('users')
+      .child(curuser.uid)
+      .child('profile.jpg');
+  final uploadTask = storageRef.putFile(image);
+  final snapshot = await uploadTask.whenComplete(() => null);
+  final downloadUrl = await snapshot.ref.getDownloadURL();
+  databaseReference
+      .child('users')
+      .child(curuser.uid)
+      .child('profile')
+      .set(downloadUrl);
+}
+
+Future<String> getProfileUrl({required userId}) async {
+  late String url;
+  await databaseReference
+      .child('users')
+      .child(userId)
+      .child('profile')
+      .once()
+      .then((value) {
+    url = value.snapshot.value.toString();
+    print('url');
+  });
+  return url;
 }
