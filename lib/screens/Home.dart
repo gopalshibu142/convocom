@@ -32,7 +32,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-   String url='';
+  String url = '';
   late UserDetails user;
   late List<Widget> _widgetOptions;
   late PageController pagecontroller;
@@ -45,14 +45,11 @@ class _HomeState extends State<Home> {
     this.user = user;
   }
   Future<void> initialize() async {
+    await getPeoplelist();
     url = await getProfileUrl(userId: curuser.uid);
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
-  late List people;
-  late List profileUrls;
   void initState() {
     // user.auth.currentUser?.updateDisplayName("Gopal S");
     // user.auth.currentUser?.updatePhoneNumber("+917592806009" as PhoneAuthCredential);
@@ -108,19 +105,20 @@ class _HomeState extends State<Home> {
           ),
           backgroundColor: theme.lvl1,
           leading: CircleAvatar(
-                          radius: 35,
-                          backgroundColor: theme.lvl1,
+            radius: 35,
+            backgroundColor: theme.lvl1,
 
-                          //backgroundImage: showprofile(profileUrls[index]),
-                          child: url!=''?Container(
-                              height: 51,
-                              width: 51,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: showprofile(url)),
-                                  borderRadius: BorderRadius.circular(50))):Image.asset('assets/person.png'),
-                        ),
+            //backgroundImage: showprofile(profileUrls[index]),
+            child: url != ''
+                ? Container(
+                    height: 51,
+                    width: 51,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            fit: BoxFit.cover, image: showprofile(url)),
+                        borderRadius: BorderRadius.circular(50)))
+                : Image.asset('assets/person.png'),
+          ),
         ),
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add),
@@ -171,90 +169,82 @@ class _HomeState extends State<Home> {
   Container home() => Container(
       color: Color(0xff03001C),
       height: double.infinity,
-      child: FutureBuilder(
-          future: getPeoplelist(),
-          builder: (context, snapshot) {
-            // List<List> list = snapshot.data??[];
+      child: !people.isEmpty
+          ?
+          // List<List> list = snapshot.data??[];
 
-            if (snapshot.hasData) {
-              people = snapshot.data![0];
-              profileUrls = snapshot.data![1];
-              print(people.length);
-              return ListView.builder(
-                  itemCount: people.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    // access element from list using index
-                    // you can create and return a widget of your choice
-                    return Container(
-                      decoration: BoxDecoration(
-                          //color: Color(0xff03001C),
-                          border: Border(
-                              top: BorderSide(
-                                color: Colors.black38,
-                              ),
-                              bottom: BorderSide(
-                                  // style: BorderStyle.solid,
-                                  color: Colors.black38))),
-                      alignment: Alignment.center,
-                      height: 100,
-                      width: double.infinity,
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          radius: 50,
-                          backgroundColor: theme.lvl1,
-
-                          //backgroundImage: showprofile(profileUrls[index]),
-                          child: Container(
-                              height: 51,
-                              width: 51,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: showprofile(profileUrls[index])),
-                                  borderRadius: BorderRadius.circular(50))),
-                        ),
-                        title: Text(people[index]),
-                        onTap: () async {
-                          var messages = await getMessage(people[index]);
-                          convID = await getConvId(people[index]);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ChatContainer(
-                                      name: people[index],
-                                      messages: messages,
-                                    )),
-                          );
-                        },
-                      ),
-                    );
-                  });
-            } else {
-              return SizedBox(
-                width: 200.0,
-                height: 100.0,
-                child: Shimmer.fromColors(
-                  baseColor: Color.fromARGB(255, 48, 45, 45),
-                  highlightColor: Color.fromARGB(255, 0, 0, 0),
-                  child: ListView(
-                    children: [
-                      for (int i = 0; i <= 10; i++)
-                        Container(
-                          height: 100,
-                          alignment: Alignment.center,
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              maxRadius: 50,
-                            ),
-                            title: Text('username'),
+          ListView.builder(
+              itemCount: people.length,
+              itemBuilder: (BuildContext context, int index) {
+                // access element from list using index
+                // you can create and return a widget of your choice
+                return Container(
+                  decoration: BoxDecoration(
+                      //color: Color(0xff03001C),
+                      border: Border(
+                          top: BorderSide(
+                            color: Colors.black38,
                           ),
-                        )
-                    ],
+                          bottom: BorderSide(
+                              // style: BorderStyle.solid,
+                              color: Colors.black38))),
+                  alignment: Alignment.center,
+                  height: 100,
+                  width: double.infinity,
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 50,
+                      backgroundColor: theme.lvl1,
+
+                      //backgroundImage: showprofile(profileUrls[index]),
+                      child: Container(
+                          height: 51,
+                          width: 51,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: showprofile(profileUrls[index])),
+                              borderRadius: BorderRadius.circular(50))),
+                    ),
+                    title: Text(people[index]),
+                    onTap: () async {
+                      var messages = await getMessage(people[index]);
+                      convID = await getConvId(people[index]);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChatContainer(
+                                  name: people[index],
+                                  messages: messages,
+                                )),
+                      );
+                    },
                   ),
+                );
+              })
+          : SizedBox(
+              width: 200.0,
+              height: 100.0,
+              child: Shimmer.fromColors(
+                baseColor: Color.fromARGB(255, 48, 45, 45),
+                highlightColor: Color.fromARGB(255, 0, 0, 0),
+                child: ListView(
+                  children: [
+                    for (int i = 0; i <= 10; i++)
+                      Container(
+                        height: 100,
+                        alignment: Alignment.center,
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            maxRadius: 50,
+                          ),
+                          title: Text('username'),
+                        ),
+                      )
+                  ],
                 ),
-              );
-            }
-          }));
+              ),
+            ));
 
   Container community() => Container(
         height: double.infinity,
@@ -273,23 +263,24 @@ class _HomeState extends State<Home> {
           source: ImageSource.gallery,
         );
         CroppedFile? croppedFile = await ImageCropper().cropImage(
-          sourcePath: File(pickedFile!.path).path,
-          aspectRatioPresets: [CropAspectRatioPreset.square],
-
-         uiSettings: [AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            toolbarColor: Colors.deepOrange,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        IOSUiSettings(
-          title: 'Cropper',
-        ),
-        WebUiSettings(
-          context: context,
-        ),]
-          
-        );
+            sourcePath: File(pickedFile!.path).path,
+            aspectRatioPresets: [
+              CropAspectRatioPreset.square
+            ],
+            uiSettings: [
+              AndroidUiSettings(
+                  toolbarTitle: 'Cropper',
+                  toolbarColor: Colors.deepOrange,
+                  toolbarWidgetColor: Colors.white,
+                  initAspectRatio: CropAspectRatioPreset.original,
+                  lockAspectRatio: false),
+              IOSUiSettings(
+                title: 'Cropper',
+              ),
+              WebUiSettings(
+                context: context,
+              ),
+            ]);
         showSnack('Uploading', context);
         await uploadProfile(croppedFile);
         url = await getProfileUrl(userId: curuser.uid);

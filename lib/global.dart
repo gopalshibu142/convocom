@@ -115,3 +115,5 @@ FirebaseFirestore cloud = FirebaseFirestore.instance;
 var curr_msgid = '';
 Map mapname_id = {};
 var convID;
+ List people = [];
+List profileUrls=[];

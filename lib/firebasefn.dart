@@ -295,11 +295,11 @@ Future addConncetion(String email, context) async {
   }
 }
 
-Future<List<List>> getPeoplelist() async {
-  List people = [];
+Future<void> getPeoplelist() async {
+  people = [];
   List peopleID = [];
   List msgID = [];
-  List profileUrls = [];
+  profileUrls = [];
 
   mapname_id = {};
   await databaseReference
@@ -351,7 +351,7 @@ Future<List<List>> getPeoplelist() async {
     //print(mapname_id);
   }
   // print(profile);
-  return [people, profileUrls];
+  people;
 }
 
 Future<String> getConvId(name) async {
