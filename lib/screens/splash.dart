@@ -31,7 +31,7 @@ class _SplashFuturePageState extends State<SplashFuturePage> {
     user = UserDetails();
     auth = FirebaseAuth.instance;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    signed = prefs.getBool('issignedin');
+    signed =  prefs.getBool('issignedin');
     if (signed == true) {
       email = prefs.getString('useremail');
       pass = prefs.getString('userpass');
@@ -64,6 +64,7 @@ class _SplashFuturePageState extends State<SplashFuturePage> {
       showLoader: true,
       loadingText: Text("Loading..."),
       futureNavigator: futureCallLogin(),
+      durationInSeconds: 2,
     );
   }
 }

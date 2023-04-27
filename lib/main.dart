@@ -38,16 +38,19 @@ class _MyappState extends State<Myapp> {
   late bool signedin;
 
   _MyappState() {}
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration(microseconds: 1)).then((value) async {
+
+  Future<void> init() async{
       prefs = SharedPreferences.getInstance();
       signedin =
           prefs.containsKey("issignedin") ? prefs.getBool('issignedin') : false;
-    });
-    //initShared();
+          
+  }
+  @override
+  void initState() {
+    super.initState();
     user = UserDetails();
+    //initShared();
+    
   }
 
   @override
@@ -55,9 +58,7 @@ class _MyappState extends State<Myapp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "convocom : let's blaber",
-      theme: ThemeData.dark(
-        useMaterial3: true
-      ),
+      theme: ThemeData.dark(useMaterial3: true),
       initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.

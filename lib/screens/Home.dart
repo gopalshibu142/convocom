@@ -78,7 +78,7 @@ class _HomeState extends State<Home> {
                   hintText: 'Enter the email ',
                   suffix: IconButton(
                       onPressed: () async {
-                        await addConncetion(txt.text, ctx);
+                        await addConncetion(txt.text.trim(), ctx);
                         setState(() {});
                       },
                       icon: Icon(Icons.search)))),
@@ -269,13 +269,13 @@ class _HomeState extends State<Home> {
             ],
             uiSettings: [
               AndroidUiSettings(
-                  toolbarTitle: 'Cropper',
-                  toolbarColor: Colors.deepOrange,
+                  toolbarTitle: 'Crop Image',
+                  toolbarColor: theme.lvl1,
                   toolbarWidgetColor: Colors.white,
                   initAspectRatio: CropAspectRatioPreset.original,
                   lockAspectRatio: false),
               IOSUiSettings(
-                title: 'Cropper',
+                title: 'Crop Image',
               ),
               WebUiSettings(
                 context: context,
@@ -295,9 +295,28 @@ class _HomeState extends State<Home> {
         final pickedFile = await ImagePicker().pickImage(
           source: ImageSource.gallery,
         );
-
+        CroppedFile? croppedFile = await ImageCropper().cropImage(
+            sourcePath: File(pickedFile!.path).path,
+            aspectRatioPresets: [
+              CropAspectRatioPreset.square
+            ],
+            uiSettings: [
+              AndroidUiSettings(
+                  toolbarTitle: 'Crop Image',
+                  toolbarColor: theme.lvl1,
+                  toolbarWidgetColor: Colors.white,
+                  initAspectRatio: CropAspectRatioPreset.original,
+                  lockAspectRatio: false),
+              IOSUiSettings(
+                title: 'Crop Image',
+              ),
+              WebUiSettings(
+                context: context,
+              ),
+            ]);
+        showSnack('Uploading', context);
         print(pickedFile!.path);
-        await uploadProfile(File(pickedFile.path));
+        await uploadProfile(File(croppedFile!.path));
         url = await getProfileUrl(userId: curuser.uid);
         showSnack('Profile Updated', context);
         setState(() {});
