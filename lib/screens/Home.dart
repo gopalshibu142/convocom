@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'package:convocom/firebasefn.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:convocom/global.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'chatpage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -47,6 +49,7 @@ class _HomeState extends State<Home> {
   }
 
   late List people;
+  late List profileUrls;
   void initState() {
     // user.auth.currentUser?.updateDisplayName("Gopal S");
     // user.auth.currentUser?.updatePhoneNumber("+917592806009" as PhoneAuthCredential);
@@ -90,7 +93,7 @@ class _HomeState extends State<Home> {
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  File? _imageFile;
+  late File _imageFile;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,8 +160,11 @@ class _HomeState extends State<Home> {
       child: FutureBuilder(
           future: getPeoplelist(),
           builder: (context, snapshot) {
-            people = snapshot.data ?? [];
+            // List<List> list = snapshot.data??[];
+
             if (snapshot.hasData) {
+              people = snapshot.data![0];
+              profileUrls = snapshot.data![1];
               print(people.length);
               return ListView.builder(
                   itemCount: people.length,
@@ -180,10 +186,18 @@ class _HomeState extends State<Home> {
                       width: double.infinity,
                       child: ListTile(
                         leading: CircleAvatar(
-                          minRadius: 49,
-                          backgroundColor: Colors.grey,
-                          maxRadius: 60,
-                          backgroundImage: AssetImage('assets/person.png'),
+                          radius: 50,
+                          backgroundColor: theme.lvl1,
+
+                          //backgroundImage: showprofile(profileUrls[index]),
+                          child: Container(
+                              height: 51,
+                              width: 51,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: showprofile(profileUrls[index])),
+                                  borderRadius: BorderRadius.circular(50))),
                         ),
                         title: Text(people[index]),
                         onTap: () async {
@@ -235,60 +249,134 @@ class _HomeState extends State<Home> {
         color: theme.lvl0,
         child: Text('Coming soon'),
       );
+  Future<void> _getStoragePermission() async {
+    DeviceInfoPlugin plugin = DeviceInfoPlugin();
+    AndroidDeviceInfo android = await plugin.androidInfo;
+    print(android.model);
+    if (android.version.sdkInt < 33) {
+      if (await Permission.storage.request().isGranted) {
+        final pickedFile = await ImagePicker().pickImage(
+          source: ImageSource.gallery,
+        );
+        CroppedFile? croppedFile = await ImageCropper().cropImage(
+          sourcePath: pickedFile!.path,
+          aspectRatioPresets: [CropAspectRatioPreset.square],
+
+         uiSettings: [AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+        WebUiSettings(
+          context: context,
+        ),]
+          
+        );
+        await uploadProfile(croppedFile);
+        url = await getProfileUrl(userId: curuser.uid);
+        setState(() {});
+      } else if (await Permission.storage.request().isPermanentlyDenied) {
+        await openAppSettings();
+      } else if (await Permission.audio.request().isDenied) {
+        showSnack('Permission error', context);
+      }
+    } else {
+      if (await Permission.photos.request().isGranted) {
+        final pickedFile = await ImagePicker().pickImage(
+          source: ImageSource.gallery,
+        );
+
+        print(pickedFile!.path);
+        await uploadProfile(File(pickedFile.path));
+        url = await getProfileUrl(userId: curuser.uid);
+        showSnack('Profile Updated', context);
+        setState(() {});
+      } else if (await Permission.photos.request().isPermanentlyDenied) {
+        await openAppSettings();
+      } else if (await Permission.photos.request().isDenied) {
+        showSnack('Permission error', context);
+      }
+    }
+  }
+
   Widget profile() {
     return Container(
       color: Color(0xff03001C),
       padding: EdgeInsets.only(top: 20),
-      child: Builder(
-        builder: (context) {
-          return Column(
-            children: [
-              GestureDetector(
-                onTap: () async {
-                  var status = await Permission.photos.isGranted;
-                  if (!status) {
-                    await Permission.photos.request();
-                    await Permission.storage.request();
-                  }
-                  final pickedFile = await ImagePicker().pickImage(
-                    source: ImageSource.gallery,
-                  );
-                  setState(() {
-                    //print(pickedFile!.path);
-                    _imageFile = File(pickedFile!.path);
-                  });
-                  uploadProfile(_imageFile);
-                },
+      child: Builder(builder: (context) {
+        return Column(
+          children: [
+            GestureDetector(
+              onTap: () async {
+                await _getStoragePermission();
+              },
+              child: CircleAvatar(
+                radius: 82,
+                backgroundColor: theme.lvl2,
                 child: CircleAvatar(
-                  radius: 82,
-                  backgroundColor: theme.lvl2,
-                  child: CircleAvatar(
-                      radius: 80,
-                      backgroundColor: theme.lvl1,
-                      
-                      backgroundImage: NetworkImage(url)),
+                  child: Container(
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              fit: BoxFit.cover, image: showprofile(url)),
+                          borderRadius: BorderRadius.circular(200))),
+                  radius: 80,
+                  backgroundColor: theme.lvl1,
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Text("email : ${user.auth.currentUser?.email}\n"),
-              Text("name : ${user.auth.currentUser?.displayName}\n"),
-              Text("phone : ${user.auth.currentUser?.phoneNumber}\n"),
-              TextButton(
-                  onPressed: () {
-                    user.signout(context);
-                  },
-                  child: Text(
-                    'Logout',
-                    style: TextStyle(color: theme.lvl3, fontSize: 18),
-                  ))
-              //Text("phone : ${user.auth.currentUser?.email}"),
-            ],
-          );
-        }
-      ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Text("email : ${user.auth.currentUser?.email}\n"),
+            Text("name : ${user.auth.currentUser?.displayName}\n"),
+            Text("phone : ${user.auth.currentUser?.phoneNumber}\n"),
+            TextButton(
+                onPressed: () {
+                  user.signout(context);
+                },
+                child: Text(
+                  'Logout',
+                  style: TextStyle(color: theme.lvl3, fontSize: 18),
+                ))
+            //Text("phone : ${user.auth.currentUser?.email}"),
+          ],
+        );
+      }),
     );
+  }
+
+  ImageProvider showprofile(urlval) {
+    // print(url);
+
+    if (urlval == 'error' || urlval == 'null' || urlval == null) {
+      print('object');
+      return Image.asset('assets/person.png').image;
+    } else
+      return Image.network(
+        urlval,
+        loadingBuilder: (BuildContext context, Widget child,
+            ImageChunkEvent? loadingProgress) {
+          if (loadingProgress == null) {
+            return child;
+          }
+          return Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
+          );
+        },
+        errorBuilder:
+            (BuildContext context, Object error, StackTrace? stackTrace) {
+          return Text('Error loading image');
+        },
+      ).image;
   }
 
   @override

@@ -1,7 +1,7 @@
 //import 'dart:html';
 
 //import 'dart:js';
-
+import 'dart:io';
 import 'dart:convert';
 //import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:lottie/lottie.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:quickalert/models/quickalert_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -294,10 +295,12 @@ Future addConncetion(String email, context) async {
   }
 }
 
-Future<List> getPeoplelist() async {
+Future<List<List>> getPeoplelist() async {
   List people = [];
   List peopleID = [];
   List msgID = [];
+  List profileUrls = [];
+
   mapname_id = {};
   await databaseReference
       .child('users')
@@ -334,9 +337,21 @@ Future<List> getPeoplelist() async {
       people.add(value.snapshot.value);
       mapname_id.addAll({value.snapshot.value: element});
     });
+    await databaseReference
+        .child('users')
+        .child(element.toString())
+        .child('profile')
+        .once()
+        .then((value) {
+      // print(value.snapshot.value);
+      profileUrls.add(value.snapshot.value);
+
+      //mapname_id.addAll({value.snapshot.value: element});
+    });
     //print(mapname_id);
   }
-  return people;
+  // print(profile);
+  return [people, profileUrls];
 }
 
 Future<String> getConvId(name) async {
@@ -390,7 +405,9 @@ Future<List<types.TextMessage>> getMessage(name) async {
   return msgs;
 }
 
-void uploadProfile(image) async {
+Future<void> uploadProfile( image) async {
+ // print(await Permission.photos.status);
+ 
   final storageRef = FirebaseStorage.instance
       .ref()
       .child('users')
@@ -407,7 +424,7 @@ void uploadProfile(image) async {
 }
 
 Future<String> getProfileUrl({required userId}) async {
-  late String url;
+  late String url = 'error';
   await databaseReference
       .child('users')
       .child(userId)
@@ -415,7 +432,9 @@ Future<String> getProfileUrl({required userId}) async {
       .once()
       .then((value) {
     url = value.snapshot.value.toString();
-    print('url');
+    //print('url');
+  }).onError((error, stackTrace) {
+    url = 'error';
   });
   return url;
 }
