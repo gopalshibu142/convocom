@@ -32,7 +32,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late String url;
+   String url='';
   late UserDetails user;
   late List<Widget> _widgetOptions;
   late PageController pagecontroller;
@@ -46,6 +46,9 @@ class _HomeState extends State<Home> {
   }
   Future<void> initialize() async {
     url = await getProfileUrl(userId: curuser.uid);
+    setState(() {
+      
+    });
   }
 
   late List people;
@@ -105,8 +108,19 @@ class _HomeState extends State<Home> {
           ),
           backgroundColor: theme.lvl1,
           leading: CircleAvatar(
-            child: Icon(Icons.person),
-          ),
+                          radius: 35,
+                          backgroundColor: theme.lvl1,
+
+                          //backgroundImage: showprofile(profileUrls[index]),
+                          child: url!=''?Container(
+                              height: 51,
+                              width: 51,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: showprofile(url)),
+                                  borderRadius: BorderRadius.circular(50))):Image.asset('assets/person.png'),
+                        ),
         ),
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add),
@@ -259,7 +273,7 @@ class _HomeState extends State<Home> {
           source: ImageSource.gallery,
         );
         CroppedFile? croppedFile = await ImageCropper().cropImage(
-          sourcePath: pickedFile!.path,
+          sourcePath: File(pickedFile!.path).path,
           aspectRatioPresets: [CropAspectRatioPreset.square],
 
          uiSettings: [AndroidUiSettings(
@@ -276,6 +290,7 @@ class _HomeState extends State<Home> {
         ),]
           
         );
+        showSnack('Uploading', context);
         await uploadProfile(croppedFile);
         url = await getProfileUrl(userId: curuser.uid);
         setState(() {});
