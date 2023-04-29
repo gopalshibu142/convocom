@@ -1,5 +1,5 @@
 //import 'dart:js';
-
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:io';
 import 'package:convocom/firebasefn.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -254,6 +254,38 @@ class _HomeState extends State<Home> {
         child: Text('Coming soon'),
       );
   Future<void> _getStoragePermission() async {
+    if(kIsWeb){
+      final pickedFile = await ImagePicker().pickImage(
+          source: ImageSource.gallery,
+        );
+        CroppedFile? croppedFile = await ImageCropper().cropImage(
+            sourcePath: File(pickedFile!.path).path,
+            aspectRatioPresets: [
+              CropAspectRatioPreset.square
+            ],
+            uiSettings: [
+              AndroidUiSettings(
+                  toolbarTitle: 'Crop Image',
+                  toolbarColor: theme.lvl1,
+                  toolbarWidgetColor: Colors.white,
+                  initAspectRatio: CropAspectRatioPreset.original,
+                  lockAspectRatio: false),
+              IOSUiSettings(
+                title: 'Crop Image',
+              ),
+              WebUiSettings(
+                context: context,
+                // mouseWheelZoom: true,
+                showZoomer: true,
+              enforceBoundary: true,
+              enableZoom: true  
+              ),
+            ]);
+        showSnack('Uploading', context);
+        await uploadProfile(File(croppedFile!.path));
+        url = await getProfileUrl(userId: curuser.uid);
+        setState(() {});
+    }else{
     DeviceInfoPlugin plugin = DeviceInfoPlugin();
     AndroidDeviceInfo android = await plugin.androidInfo;
     print(android.model);
@@ -282,7 +314,7 @@ class _HomeState extends State<Home> {
               ),
             ]);
         showSnack('Uploading', context);
-        await uploadProfile(croppedFile);
+        await uploadProfile(File(croppedFile!.path));
         url = await getProfileUrl(userId: curuser.uid);
         setState(() {});
       } else if (await Permission.storage.request().isPermanentlyDenied) {
@@ -315,7 +347,7 @@ class _HomeState extends State<Home> {
               ),
             ]);
         showSnack('Uploading', context);
-        print(pickedFile!.path);
+       // print(pickedFile!.path);
         await uploadProfile(File(croppedFile!.path));
         url = await getProfileUrl(userId: curuser.uid);
         showSnack('Profile Updated', context);
@@ -325,6 +357,7 @@ class _HomeState extends State<Home> {
       } else if (await Permission.photos.request().isDenied) {
         showSnack('Permission error', context);
       }
+    }
     }
   }
 
