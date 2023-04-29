@@ -21,6 +21,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 //import 'package:flutter/cupertino.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:convocom/bricks/Widgets Example/bottom_nav_bar_curved.dart';
 
 class Home extends StatefulWidget {
@@ -46,14 +47,15 @@ class _HomeState extends State<Home> {
   _HomeState(user) {
     this.user = user;
   }
+  var pref;
   Future<void> initialize() async {
     await getPeoplelist();
     url = await getProfileUrl(userId: curuser.uid);
-    setState(() {});
+    pref = await SharedPreferences.getInstance();
   }
 
   void initState() {
-    theme.nature();
+    //theme.nature();
     // user.auth.currentUser?.updateDisplayName("Gopal S");
     // user.auth.currentUser?.updatePhoneNumber("+917592806009" as PhoneAuthCredential);
     super.initState();
@@ -74,11 +76,9 @@ class _HomeState extends State<Home> {
             title: const Text('default'),
             onTap: () {
               theme.defaulttheme();
-              setState(() {
-                
-              });
+              setState(() {});
+              pref.setInt('theme',0);
               Navigator.pop(context);
-
             },
           ),
           ListTile(
@@ -86,9 +86,8 @@ class _HomeState extends State<Home> {
             title: const Text('blueblue'),
             onTap: () {
               theme.blueblue();
-              setState(() {
-                
-              });
+              setState(() {});
+              pref.setInt('theme',1);
               Navigator.pop(context);
             },
           ),
@@ -97,36 +96,68 @@ class _HomeState extends State<Home> {
             title: const Text('pink everywhere'),
             onTap: () {
               theme.pinkeverywhere();
-              setState(() {
-                
-              });
+              setState(() {});
+              pref.setInt('theme',2);
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.app_shortcut),
+            title: const Text('nature'),
+            onTap: () {
+              theme.nature();
+              setState(() {});
+              pref.setInt('theme',3);
               Navigator.pop(context);
             },
           )
         ],
       ),
-    ).then((returnVal) {
-      if (returnVal != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('You clicked: $returnVal'),
-            action: SnackBarAction(label: 'OK', onPressed: () {}),
+    );
+  }
+
+  void showProfileAlert(ImageProvider img, String name) {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => SimpleDialog(
+        backgroundColor: theme.lvl2,
+        title: Text(name),
+        children: <Widget>[
+          Container(
+            height: 250,
+            width: 250,
+            decoration: BoxDecoration(image: DecorationImage(image: img)),
           ),
-        );
-      }
-    });
+          IconButton(
+              onPressed: () async {
+                var messages = await getMessage(name);
+                convID = await getConvId(name);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ChatContainer(
+                            name: name,
+                            messages: messages,
+                          )),
+                );
+              },
+              icon: Icon(Icons.message))
+        ],
+      ),
+    );
   }
 
   Container buildBottomSheet(BuildContext parent, BuildContext ctx,
       GlobalKey<ScaffoldState> scaffold) {
     TextEditingController txt = TextEditingController();
     return Container(
-      // color: Colors.red,
+      color: theme.lvl2,
       height: 300,
       padding: EdgeInsets.all(50),
       child: ListView(
         children: [
           Text(
+            style: TextStyle(fontSize: 25),
             'Add User',
             textAlign: TextAlign.center,
           ),
@@ -191,7 +222,7 @@ class _HomeState extends State<Home> {
         ),
         floatingActionButton: FloatingActionButton(
             backgroundColor: theme.lvl2,
-            child: Icon(Icons.add),
+            child: Icon(Icons.person_add),
             onPressed: () {
               setState(() {
                 var b = this._scaffoldKey.currentState?.showBottomSheet(
@@ -274,21 +305,26 @@ class _HomeState extends State<Home> {
                             height: 100,
                             width: double.infinity,
                             child: ListTile(
-                              leading: CircleAvatar(
-                                radius: 50,
-                                backgroundColor: theme.lvl1,
+                              leading: GestureDetector(
+                                onTap: () => showProfileAlert(
+                                    showprofile(profileUrls[index]),
+                                    people[index]),
+                                child: CircleAvatar(
+                                  radius: 50,
+                                  backgroundColor: theme.lvl1,
 
-                                //backgroundImage: showprofile(profileUrls[index]),
-                                child: Container(
-                                    height: 51,
-                                    width: 51,
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: showprofile(
-                                                profileUrls[index])),
-                                        borderRadius:
-                                            BorderRadius.circular(50))),
+                                  //backgroundImage: showprofile(profileUrls[index]),
+                                  child: Container(
+                                      height: 51,
+                                      width: 51,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: showprofile(
+                                                  profileUrls[index])),
+                                          borderRadius:
+                                              BorderRadius.circular(50))),
+                                ),
                               ),
                               title: Text(people[index]),
                               onTap: () async {

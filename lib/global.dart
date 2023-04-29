@@ -136,12 +136,31 @@ void showSnack(content, context) {
 }
 
 UIColor theme = UIColor();
+void getTheme(int n) {
+  print(n);
+  switch (n) {
+    case 0:
+      theme.defaulttheme();
+      break;
+    case 1:
+      theme.blueblue();
+      break;
+    case 2:
+      theme.pinkeverywhere();
+      break;
+    case 3:
+      theme.nature();
+      break;
+    default:
+      theme.defaulttheme();
+  }
+}
 
 FirebaseFirestore cloud = FirebaseFirestore.instance;
-
+int themeno = 0;
 var curr_msgid = '';
 Map mapname_id = {};
 var convID;
 List people = [];
 List profileUrls = [];
-bool islistadded=false;
+bool islistadded = false;

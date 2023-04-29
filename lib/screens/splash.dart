@@ -20,6 +20,12 @@ class SplashFuturePage extends StatefulWidget {
 }
 
 class _SplashFuturePageState extends State<SplashFuturePage> {
+  @override
+  void initState() {
+    
+    super.initState();
+  }
+ 
   late UserDetails user;
   late bool? signed;
   late FirebaseAuth auth;
@@ -31,6 +37,10 @@ class _SplashFuturePageState extends State<SplashFuturePage> {
     user = UserDetails();
     auth = FirebaseAuth.instance;
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    // var prefs =await  SharedPreferences.getInstance();
+    themeno =prefs.containsKey('theme') ? prefs.getInt('theme')??0 : 0;
+    
+    getTheme(themeno);
     signed =  prefs.getBool('issignedin');
     if (signed == true) {
       email = prefs.getString('useremail');

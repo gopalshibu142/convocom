@@ -39,18 +39,18 @@ class _MyappState extends State<Myapp> {
 
   _MyappState() {}
 
-  Future<void> init() async{
-      prefs = SharedPreferences.getInstance();
-      signedin =
-          prefs.containsKey("issignedin") ? prefs.getBool('issignedin') : false;
-          
+  Future<void> init() async {
+    prefs = SharedPreferences.getInstance();
+    signedin =
+        prefs.containsKey("issignedin") ? prefs.getBool('issignedin') : false;
+    
   }
+
   @override
   void initState() {
     super.initState();
     user = UserDetails();
-    //initShared();
-    
+    init();
   }
 
   @override
