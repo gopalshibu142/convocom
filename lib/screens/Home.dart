@@ -4,21 +4,23 @@ import 'dart:io';
 import 'package:convocom/firebasefn.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:convocom/global.dart';
-import 'package:flutter_launcher_icons/xml_templates.dart';
+//import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:awesome_icons/awesome_icons.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
-import 'package:lottie/lottie.dart';
+//import 'package:firebase_database/firebase_database.dart';
+//import 'package:awesome_icons/awesome_icons.dart';
+//import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+//import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+//import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'chatpage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+//import 'package:flutter/cupertino.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 //import 'package:convocom/bricks/Widgets Example/bottom_nav_bar_curved.dart';
 
 class Home extends StatefulWidget {
@@ -37,7 +39,7 @@ class _HomeState extends State<Home> {
   late List<Widget> _widgetOptions;
   late PageController pagecontroller;
   var temp = 50.0;
-  UIColor theme = UIColor();
+  //UIColor theme = UIColor();
   int _selectedIndex = 0;
   @override
   var usermail;
@@ -51,12 +53,68 @@ class _HomeState extends State<Home> {
   }
 
   void initState() {
+    theme.nature();
     // user.auth.currentUser?.updateDisplayName("Gopal S");
     // user.auth.currentUser?.updatePhoneNumber("+917592806009" as PhoneAuthCredential);
     super.initState();
     initialize();
     pagecontroller = PageController();
     _widgetOptions = [home(), community(), profile()];
+  }
+
+  void showThemeSelect() {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => SimpleDialog(
+        backgroundColor: theme.lvl2,
+        title: const Text('Select Theme'),
+        children: <Widget>[
+          ListTile(
+            leading: const Icon(Icons.app_shortcut),
+            title: const Text('default'),
+            onTap: () {
+              theme.defaulttheme();
+              setState(() {
+                
+              });
+              Navigator.pop(context);
+
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.app_shortcut),
+            title: const Text('blueblue'),
+            onTap: () {
+              theme.blueblue();
+              setState(() {
+                
+              });
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.app_shortcut),
+            title: const Text('pink everywhere'),
+            onTap: () {
+              theme.pinkeverywhere();
+              setState(() {
+                
+              });
+              Navigator.pop(context);
+            },
+          )
+        ],
+      ),
+    ).then((returnVal) {
+      if (returnVal != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('You clicked: $returnVal'),
+            action: SnackBarAction(label: 'OK', onPressed: () {}),
+          ),
+        );
+      }
+    });
   }
 
   Container buildBottomSheet(BuildContext parent, BuildContext ctx,
@@ -114,13 +172,25 @@ class _HomeState extends State<Home> {
                     height: 51,
                     width: 51,
                     decoration: BoxDecoration(
+                        color: theme.lvl1,
                         image: DecorationImage(
                             fit: BoxFit.cover, image: showprofile(url)),
                         borderRadius: BorderRadius.circular(50)))
-                : Image.asset('assets/person.png'),
+                : Container(
+                    color: theme.lvl0,
+                    child: Icon(Icons.person),
+                  ),
           ),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  showThemeSelect();
+                },
+                icon: Icon(Icons.settings))
+          ],
         ),
         floatingActionButton: FloatingActionButton(
+            backgroundColor: theme.lvl2,
             child: Icon(Icons.add),
             onPressed: () {
               setState(() {
@@ -167,9 +237,9 @@ class _HomeState extends State<Home> {
   }
 
   Container home() => Container(
-      color: Color(0xff03001C),
+      color: Color(0xff000000),
       height: double.infinity,
-      child: !people.isEmpty
+      child: islistadded
           ?
           // List<List> list = snapshot.data??[];
 
@@ -178,47 +248,66 @@ class _HomeState extends State<Home> {
               itemBuilder: (BuildContext context, int index) {
                 // access element from list using index
                 // you can create and return a widget of your choice
-                return Container(
-                  decoration: BoxDecoration(
-                      //color: Color(0xff03001C),
-                      border: Border(
-                          top: BorderSide(
-                            color: Colors.black38,
+                return AnimationConfiguration.staggeredList(
+                  position: index,
+                  delay: Duration(milliseconds: 100),
+                  child: SlideAnimation(
+                    duration: Duration(milliseconds: 2500),
+                    verticalOffset: -250,
+                    curve: Curves.fastLinearToSlowEaseIn,
+                    child: ScaleAnimation(
+                      duration: Duration(milliseconds: 1500),
+                      curve: Curves.fastLinearToSlowEaseIn,
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 10,
                           ),
-                          bottom: BorderSide(
-                              // style: BorderStyle.solid,
-                              color: Colors.black38))),
-                  alignment: Alignment.center,
-                  height: 100,
-                  width: double.infinity,
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      radius: 50,
-                      backgroundColor: theme.lvl1,
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(25)),
+                              color: theme.lvl0,
+                              //color: Color(0xff03001C),
+                            ),
+                            alignment: Alignment.center,
+                            height: 100,
+                            width: double.infinity,
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                radius: 50,
+                                backgroundColor: theme.lvl1,
 
-                      //backgroundImage: showprofile(profileUrls[index]),
-                      child: Container(
-                          height: 51,
-                          width: 51,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: showprofile(profileUrls[index])),
-                              borderRadius: BorderRadius.circular(50))),
+                                //backgroundImage: showprofile(profileUrls[index]),
+                                child: Container(
+                                    height: 51,
+                                    width: 51,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: showprofile(
+                                                profileUrls[index])),
+                                        borderRadius:
+                                            BorderRadius.circular(50))),
+                              ),
+                              title: Text(people[index]),
+                              onTap: () async {
+                                var messages = await getMessage(people[index]);
+                                convID = await getConvId(people[index]);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ChatContainer(
+                                            name: people[index],
+                                            messages: messages,
+                                          )),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    title: Text(people[index]),
-                    onTap: () async {
-                      var messages = await getMessage(people[index]);
-                      convID = await getConvId(people[index]);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ChatContainer(
-                                  name: people[index],
-                                  messages: messages,
-                                )),
-                      );
-                    },
                   ),
                 );
               })
@@ -254,116 +343,115 @@ class _HomeState extends State<Home> {
         child: Text('Coming soon'),
       );
   Future<void> _getStoragePermission() async {
-    if(kIsWeb){
+    if (kIsWeb) {
       final pickedFile = await ImagePicker().pickImage(
-          source: ImageSource.gallery,
-        );
-        CroppedFile? croppedFile = await ImageCropper().cropImage(
-            sourcePath: File(pickedFile!.path).path,
-            aspectRatioPresets: [
-              CropAspectRatioPreset.square
-            ],
-            uiSettings: [
-              AndroidUiSettings(
-                  toolbarTitle: 'Crop Image',
-                  toolbarColor: theme.lvl1,
-                  toolbarWidgetColor: Colors.white,
-                  initAspectRatio: CropAspectRatioPreset.original,
-                  lockAspectRatio: false),
-              IOSUiSettings(
-                title: 'Crop Image',
-              ),
-              WebUiSettings(
+        source: ImageSource.gallery,
+      );
+      CroppedFile? croppedFile = await ImageCropper().cropImage(
+          sourcePath: File(pickedFile!.path).path,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.square
+          ],
+          uiSettings: [
+            AndroidUiSettings(
+                toolbarTitle: 'Crop Image',
+                toolbarColor: theme.lvl1,
+                toolbarWidgetColor: Colors.white,
+                initAspectRatio: CropAspectRatioPreset.original,
+                lockAspectRatio: false),
+            IOSUiSettings(
+              title: 'Crop Image',
+            ),
+            WebUiSettings(
                 context: context,
                 // mouseWheelZoom: true,
                 showZoomer: true,
-              enforceBoundary: true,
-              enableZoom: true  
-              ),
-            ]);
-        showSnack('Uploading', context);
-        await uploadProfile(File(croppedFile!.path));
-        url = await getProfileUrl(userId: curuser.uid);
-        setState(() {});
-    }else{
-    DeviceInfoPlugin plugin = DeviceInfoPlugin();
-    AndroidDeviceInfo android = await plugin.androidInfo;
-    print(android.model);
-    if (android.version.sdkInt < 33) {
-      if (await Permission.storage.request().isGranted) {
-        final pickedFile = await ImagePicker().pickImage(
-          source: ImageSource.gallery,
-        );
-        CroppedFile? croppedFile = await ImageCropper().cropImage(
-            sourcePath: File(pickedFile!.path).path,
-            aspectRatioPresets: [
-              CropAspectRatioPreset.square
-            ],
-            uiSettings: [
-              AndroidUiSettings(
-                  toolbarTitle: 'Crop Image',
-                  toolbarColor: theme.lvl1,
-                  toolbarWidgetColor: Colors.white,
-                  initAspectRatio: CropAspectRatioPreset.original,
-                  lockAspectRatio: false),
-              IOSUiSettings(
-                title: 'Crop Image',
-              ),
-              WebUiSettings(
-                context: context,
-              ),
-            ]);
-        showSnack('Uploading', context);
-        await uploadProfile(File(croppedFile!.path));
-        url = await getProfileUrl(userId: curuser.uid);
-        setState(() {});
-      } else if (await Permission.storage.request().isPermanentlyDenied) {
-        await openAppSettings();
-      } else if (await Permission.audio.request().isDenied) {
-        showSnack('Permission error', context);
-      }
+                enforceBoundary: true,
+                enableZoom: true),
+          ]);
+      showSnack('Uploading', context);
+      await uploadProfile(File(croppedFile!.path));
+      url = await getProfileUrl(userId: curuser.uid);
+      setState(() {});
     } else {
-      if (await Permission.photos.request().isGranted) {
-        final pickedFile = await ImagePicker().pickImage(
-          source: ImageSource.gallery,
-        );
-        CroppedFile? croppedFile = await ImageCropper().cropImage(
-            sourcePath: File(pickedFile!.path).path,
-            aspectRatioPresets: [
-              CropAspectRatioPreset.square
-            ],
-            uiSettings: [
-              AndroidUiSettings(
-                  toolbarTitle: 'Crop Image',
-                  toolbarColor: theme.lvl1,
-                  toolbarWidgetColor: Colors.white,
-                  initAspectRatio: CropAspectRatioPreset.original,
-                  lockAspectRatio: false),
-              IOSUiSettings(
-                title: 'Crop Image',
-              ),
-              WebUiSettings(
-                context: context,
-              ),
-            ]);
-        showSnack('Uploading', context);
-       // print(pickedFile!.path);
-        await uploadProfile(File(croppedFile!.path));
-        url = await getProfileUrl(userId: curuser.uid);
-        showSnack('Profile Updated', context);
-        setState(() {});
-      } else if (await Permission.photos.request().isPermanentlyDenied) {
-        await openAppSettings();
-      } else if (await Permission.photos.request().isDenied) {
-        showSnack('Permission error', context);
+      DeviceInfoPlugin plugin = DeviceInfoPlugin();
+      AndroidDeviceInfo android = await plugin.androidInfo;
+      print(android.model);
+      if (android.version.sdkInt < 33) {
+        if (await Permission.storage.request().isGranted) {
+          final pickedFile = await ImagePicker().pickImage(
+            source: ImageSource.gallery,
+          );
+          CroppedFile? croppedFile = await ImageCropper().cropImage(
+              sourcePath: File(pickedFile!.path).path,
+              aspectRatioPresets: [
+                CropAspectRatioPreset.square
+              ],
+              uiSettings: [
+                AndroidUiSettings(
+                    toolbarTitle: 'Crop Image',
+                    toolbarColor: theme.lvl1,
+                    toolbarWidgetColor: Colors.white,
+                    initAspectRatio: CropAspectRatioPreset.original,
+                    lockAspectRatio: false),
+                IOSUiSettings(
+                  title: 'Crop Image',
+                ),
+                WebUiSettings(
+                  context: context,
+                ),
+              ]);
+          showSnack('Uploading', context);
+          await uploadProfile(File(croppedFile!.path));
+          url = await getProfileUrl(userId: curuser.uid);
+          setState(() {});
+        } else if (await Permission.storage.request().isPermanentlyDenied) {
+          await openAppSettings();
+        } else if (await Permission.audio.request().isDenied) {
+          showSnack('Permission error', context);
+        }
+      } else {
+        if (await Permission.photos.request().isGranted) {
+          final pickedFile = await ImagePicker().pickImage(
+            source: ImageSource.gallery,
+          );
+          CroppedFile? croppedFile = await ImageCropper().cropImage(
+              sourcePath: File(pickedFile!.path).path,
+              aspectRatioPresets: [
+                CropAspectRatioPreset.square
+              ],
+              uiSettings: [
+                AndroidUiSettings(
+                    toolbarTitle: 'Crop Image',
+                    toolbarColor: theme.lvl1,
+                    toolbarWidgetColor: Colors.white,
+                    initAspectRatio: CropAspectRatioPreset.original,
+                    lockAspectRatio: false),
+                IOSUiSettings(
+                  title: 'Crop Image',
+                ),
+                WebUiSettings(
+                  context: context,
+                ),
+              ]);
+          showSnack('Uploading', context);
+          // print(pickedFile!.path);
+          await uploadProfile(File(croppedFile!.path));
+          url = await getProfileUrl(userId: curuser.uid);
+          showSnack('Profile Updated', context);
+          setState(() {});
+        } else if (await Permission.photos.request().isPermanentlyDenied) {
+          await openAppSettings();
+        } else if (await Permission.photos.request().isDenied) {
+          showSnack('Permission error', context);
+        }
       }
-    }
     }
   }
 
   Widget profile() {
     return Container(
-      color: Color(0xff03001C),
+      color: theme.lvl0,
       padding: EdgeInsets.only(top: 20),
       child: Builder(builder: (context) {
         return Column(

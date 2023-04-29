@@ -296,6 +296,7 @@ Future addConncetion(String email, context) async {
 }
 
 Future<void> getPeoplelist() async {
+  islistadded = false;
   people = [];
   List peopleID = [];
   List msgID = [];
@@ -351,7 +352,7 @@ Future<void> getPeoplelist() async {
     //print(mapname_id);
   }
   // print(profile);
-  people;
+  islistadded = true;
 }
 
 Future<String> getConvId(name) async {
@@ -405,9 +406,9 @@ Future<List<types.TextMessage>> getMessage(name) async {
   return msgs;
 }
 
-Future<void> uploadProfile( image) async {
- // print(await Permission.photos.status);
- 
+Future<void> uploadProfile(image) async {
+  // print(await Permission.photos.status);
+
   final storageRef = FirebaseStorage.instance
       .ref()
       .child('users')
