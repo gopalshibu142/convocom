@@ -49,10 +49,12 @@ class _HomeState extends State<Home> {
   }
   var pref;
   Future<void> initialize() async {
+    initLocalNotification();
     await getPeoplelist();
     url = await getProfileUrl(userId: curuser.uid);
     pref = await SharedPreferences.getInstance();
     setState(() {});
+    
   }
 
   void initState() {
@@ -66,7 +68,7 @@ class _HomeState extends State<Home> {
   }
 
   void showThemeSelect() {
-    showNotification();
+    showNotification(title: 'title', body: 'ok');
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => SimpleDialog(

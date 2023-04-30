@@ -114,10 +114,12 @@ class UserDetails {
         curuser = user;
 
         if (success) {
+          user_ID = curuser.uid;
           SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setBool('issignedin', true);
           prefs.setString('useremail', email);
           prefs.setString('userpass', password);
+          prefs.setString('user_ID', curuser.uid);
           // debugPrint("helloworld");
           Navigator.pushReplacementNamed(context, '/home');
         }
@@ -154,6 +156,7 @@ class UserDetails {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool('issignedin', false);
         prefs.setStringList('', []);
+        prefs.setString('user_ID', 'null');
         showSnack("Signout successfull", context);
       },
     );
@@ -231,12 +234,6 @@ class UserDetails {
   }
 }
 
-void debugDB() {
-  databaseReference.once().then((snapshot) {
-    print('Data: ${snapshot.snapshot.value}');
-  });
-}
-
 Future addConncetion(String email, context) async {
   try {
     databaseReference.child('test2').set({});
@@ -246,7 +243,7 @@ Future addConncetion(String email, context) async {
     query.once().then((snap) async {
       if (!snap.snapshot.exists) {
         showSnack('User not found', context);
-        print('object');
+        // print('object');
       } else {
         var value = await snap.snapshot;
         databaseReference
@@ -257,7 +254,7 @@ Future addConncetion(String email, context) async {
             .then((snap) async {
           haschild =
               await snap.snapshot.hasChild(value.children.first.key.toString());
-          print(haschild);
+          // print(haschild);
           // print(value.children.first.key.toString());
           if (haschild == false) {
             showSnack(
@@ -279,7 +276,7 @@ Future addConncetion(String email, context) async {
                 .child(value.children.first.key.toString())
                 .child('people')
                 .update({curuser.uid: con_name}).then((rec) {
-              print('object');
+              //   print('object');
             });
             cloud.collection(con_name).add({});
           } else {
@@ -294,7 +291,7 @@ Future addConncetion(String email, context) async {
     });
   } catch (r) {
     showSnack('User not found', context);
-    print('object');
+    // print('object');
   }
 }
 
@@ -313,7 +310,7 @@ Future<void> getPeoplelist() async {
       .once()
       .then((value) {
     //  print('called');
-    print(value.snapshot.children);
+    //print(value.snapshot.children);
     value.snapshot.children.forEach((element) {
       // print(element);
 
@@ -478,32 +475,105 @@ void cloudMessaging() async {
     });
   }
 }
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-void initLocalNotification() async{
-   
 
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+void initLocalNotification() async {
+//  print('init');
   // configure the settings of the plugin
-  var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
-  var initializationSettingsIOS = DarwinInitializationSettings(
-    
-  );
+  var initializationSettingsAndroid =
+      AndroidInitializationSettings('mipmap/launcher_icon');
+  var initializationSettingsIOS = DarwinInitializationSettings();
   var initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
     iOS: initializationSettingsIOS,
   );
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
 }
-Future<void> showNotification() async {
- const AndroidNotificationDetails androidNotificationDetails =
-    AndroidNotificationDetails('your channel id', 'your channel name',
-        channelDescription: 'your channel description',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker');
-const NotificationDetails notificationDetails =
-    NotificationDetails(android: androidNotificationDetails);
-await flutterLocalNotificationsPlugin.show(
-    0, 'plain title', 'plain body', notificationDetails,
-    payload: 'item x');
+
+Future<void> showNotification(
+    {required String title, required String body}) async {
+   AndroidNotificationDetails androidNotificationDetails =
+      AndroidNotificationDetails('your channel id', 'your channel name',
+          channelDescription: 'your channel description',
+          importance: Importance.max,
+         // vibrationPattern: Int64List.fromList([10,50,50,50]),
+          priority: Priority.high,
+          enableVibration: true,
+          colorized: true,
+          ticker: 'ticker');
+   NotificationDetails notificationDetails =
+      NotificationDetails(android: androidNotificationDetails);
+  await flutterLocalNotificationsPlugin
+      .show(0, title, body, notificationDetails, payload: 'item x');
+}
+
+void listenMessages() async {
+  print('here');
+  DatabaseReference db = await FirebaseDatabase.instance.ref();
+  List<DataSnapshot> snaps = [];
+  List<String> connections = [];
+  String id = '';
+  await db
+      .child('connections')
+      .once()
+      .then((value) => snaps = value.snapshot.children.toList());
+  snaps.forEach((element) {
+    connections.add(element.key ?? '');
+  });
+  //print(connections);
+
+  await db.child('users').child(user_ID).child('people').once().then((value) {
+    value.snapshot.children.forEach((element) {
+      map_coniv_name.addAll({element.value.toString(): element.key.toString()});
+    });
+  });
+  //print(map_coniv_name);
+  for (int i = 0; i < connections.length; i++) {
+    id = map_coniv_name.containsKey(connections[i])
+        ? map_coniv_name[connections[i]] ?? 'null'
+        : 'null';
+    var name = await getName(id);
+    if (name != 'null') {
+      db
+          .child('messages')
+          .child(connections[i])
+          .orderByKey()
+          .limitToLast(1)
+          .onChildAdded
+          .listen((event) async {
+        var n;
+        n = await getName(map_coniv_name[connections[i]]);
+        print('${n} message ayach\n');
+        var idval =
+            event.snapshot.children.last.child('auther').value.toString();
+        if (idval != curuser.uid) {
+          showNotification(
+              title: n,
+              body:
+                  event.snapshot.children.last.child('text').value.toString());
+        }
+        print(event.snapshot.children.last.value);
+
+        //h print(event.snapshot.value);
+      });
+    }
+  }
+  // connections.forEach((element) async{
+
+  //   var name = mapname_id.keys.firstWhere((i) => mapname_id[i]==element);
+
+  // });
+}
+
+Future<String> getName(id) async {
+  String name = 'null';
+  DatabaseReference db = await FirebaseDatabase.instance.ref();
+  await db
+      .child('users')
+      .child(id)
+      .child('name')
+      .once()
+      .then((value) => name = value.snapshot.value.toString());
+  return name;
 }

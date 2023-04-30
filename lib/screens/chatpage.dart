@@ -18,7 +18,10 @@ class _ChatContainerState extends State<ChatContainer> {
   var name;
   _ChatContainerState(this.name, this._messages);
   late DatabaseReference dbref;
-  
+  void init() {
+    dbref.child('connections').child(convID).set('inactive');
+  }
+
   @override
   void initState() {
     //theme.defaulttheme();
@@ -26,10 +29,11 @@ class _ChatContainerState extends State<ChatContainer> {
     dbref.child('messages').child(convID).onValue.listen((event) async {
       _messages = await getMessage(name);
       setState(() {
-        print(event.snapshot.value);
-        print('object');
+        //print(event.snapshot.value);
+       // print('object');
       });
     });
+    init();
     // TODO: implement initState
     super.initState();
   }
@@ -40,19 +44,25 @@ class _ChatContainerState extends State<ChatContainer> {
   //final _notuser = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3bc');
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: theme.lvl1,
-        title: Text(name),
-      ),
-      body: Chat(
-        theme: DarkChatTheme(
-            backgroundColor: theme.lvl0,
-            primaryColor: theme.lvl2,
-            secondaryColor: theme.lvl1),
-        messages: _messages,
-        onSendPressed: _handleSendPressed,
-        user: _user,
+    return WillPopScope(
+      onWillPop: () async {
+        dbref.child('connections').child(convID).set('active');
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: theme.lvl1,
+          title: Text(name),
+        ),
+        body: Chat(
+          theme: DarkChatTheme(
+              backgroundColor: theme.lvl0,
+              primaryColor: theme.lvl2,
+              secondaryColor: theme.lvl1),
+          messages: _messages,
+          onSendPressed: _handleSendPressed,
+          user: _user,
+        ),
       ),
     );
   }
@@ -60,7 +70,7 @@ class _ChatContainerState extends State<ChatContainer> {
   void _addMessage(types.Message message) {
     setState(() {
       _messages.insert(0, message);
-      print(message.updatedAt);
+      //print(message.updatedAt);
     });
   }
 

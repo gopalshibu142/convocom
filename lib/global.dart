@@ -137,7 +137,7 @@ void showSnack(content, context) {
 
 UIColor theme = UIColor();
 void getTheme(int n) {
-  print(n);
+  // print(n);
   switch (n) {
     case 0:
       theme.defaulttheme();
@@ -164,3 +164,5 @@ var convID;
 List people = [];
 List profileUrls = [];
 bool islistadded = false;
+Map<String, String> map_coniv_name = {};
+String user_ID = '';
