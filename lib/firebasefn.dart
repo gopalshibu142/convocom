@@ -8,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:convocom/global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:lottie/lottie.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -22,6 +23,8 @@ import 'package:quickalert/quickalert.dart';
 //import 'firebase_real';
 import 'package:cloud_firestore/cloud_firestore.dart' as store;
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class UserDetails {
   //Credential crd;
@@ -406,7 +409,23 @@ Future<List<types.TextMessage>> getMessage(name) async {
   return msgs;
 }
 
-Future<void> uploadProfile(image) async {
+Future<void> uploadProfile(File image) async {
+  if (kIsWeb) {
+    var bytes = await image.readAsBytes();
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child('users')
+        .child(curuser.uid)
+        .child('profile.jpg');
+    final uploadTask = storageRef.putData(bytes);
+    final snapshot = await uploadTask.whenComplete(() => null);
+    final downloadUrl = await snapshot.ref.getDownloadURL();
+    databaseReference
+        .child('users')
+        .child(curuser.uid)
+        .child('profile')
+        .set(downloadUrl);
+  }
   // print(await Permission.photos.status);
 
   final storageRef = FirebaseStorage.instance
@@ -438,4 +457,53 @@ Future<String> getProfileUrl({required userId}) async {
     url = 'error';
   });
   return url;
+}
+
+void cloudMessaging() async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      // Handle incoming messages when the app is in the foreground
+      print('Received message: ${message.notification?.title}');
+    });
+
+    FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
+      // Handle incoming messages when the app is in the background
+      print('Received message in background: ${message.notification?.title}');
+    });
+  }
+}
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+void initLocalNotification() async{
+   
+
+  // configure the settings of the plugin
+  var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+  var initializationSettingsIOS = DarwinInitializationSettings(
+    
+  );
+  var initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
+  );
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+}
+Future<void> showNotification() async {
+ const AndroidNotificationDetails androidNotificationDetails =
+    AndroidNotificationDetails('your channel id', 'your channel name',
+        channelDescription: 'your channel description',
+        importance: Importance.max,
+        priority: Priority.high,
+        ticker: 'ticker');
+const NotificationDetails notificationDetails =
+    NotificationDetails(android: androidNotificationDetails);
+await flutterLocalNotificationsPlugin.show(
+    0, 'plain title', 'plain body', notificationDetails,
+    payload: 'item x');
 }

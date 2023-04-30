@@ -52,6 +52,7 @@ class _HomeState extends State<Home> {
     await getPeoplelist();
     url = await getProfileUrl(userId: curuser.uid);
     pref = await SharedPreferences.getInstance();
+    setState(() {});
   }
 
   void initState() {
@@ -65,6 +66,7 @@ class _HomeState extends State<Home> {
   }
 
   void showThemeSelect() {
+    showNotification();
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => SimpleDialog(
@@ -77,7 +79,7 @@ class _HomeState extends State<Home> {
             onTap: () {
               theme.defaulttheme();
               setState(() {});
-              pref.setInt('theme',0);
+              pref.setInt('theme', 0);
               Navigator.pop(context);
             },
           ),
@@ -87,7 +89,7 @@ class _HomeState extends State<Home> {
             onTap: () {
               theme.blueblue();
               setState(() {});
-              pref.setInt('theme',1);
+              pref.setInt('theme', 1);
               Navigator.pop(context);
             },
           ),
@@ -97,7 +99,7 @@ class _HomeState extends State<Home> {
             onTap: () {
               theme.pinkeverywhere();
               setState(() {});
-              pref.setInt('theme',2);
+              pref.setInt('theme', 2);
               Navigator.pop(context);
             },
           ),
@@ -107,7 +109,7 @@ class _HomeState extends State<Home> {
             onTap: () {
               theme.nature();
               setState(() {});
-              pref.setInt('theme',3);
+              pref.setInt('theme', 3);
               Navigator.pop(context);
             },
           )

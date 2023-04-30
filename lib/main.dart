@@ -18,6 +18,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   setDB();
+  cloudMessaging();
   //FirebaseAppCheck.instance.useEmulator("10.0.2.2", 9099);
   runApp(Myapp());
 }
@@ -43,7 +44,6 @@ class _MyappState extends State<Myapp> {
     prefs = SharedPreferences.getInstance();
     signedin =
         prefs.containsKey("issignedin") ? prefs.getBool('issignedin') : false;
-    
   }
 
   @override
