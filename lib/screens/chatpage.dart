@@ -55,6 +55,7 @@ class _ChatContainerState extends State<ChatContainer> {
           title: Text(name),
         ),
         body: Chat(
+
           theme: DarkChatTheme(
               backgroundColor: theme.lvl0,
               primaryColor: theme.lvl2,

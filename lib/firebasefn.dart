@@ -493,22 +493,23 @@ void initLocalNotification() async {
 
 Future<void> showNotification(
     {required String title, required String body}) async {
-   AndroidNotificationDetails androidNotificationDetails =
+  AndroidNotificationDetails androidNotificationDetails =
       AndroidNotificationDetails('your channel id', 'your channel name',
           channelDescription: 'your channel description',
           importance: Importance.max,
-         // vibrationPattern: Int64List.fromList([10,50,50,50]),
+          // vibrationPattern: Int64List.fromList([10,50,50,50]),
           priority: Priority.high,
           enableVibration: true,
           colorized: true,
           ticker: 'ticker');
-   NotificationDetails notificationDetails =
+  NotificationDetails notificationDetails =
       NotificationDetails(android: androidNotificationDetails);
   await flutterLocalNotificationsPlugin
       .show(0, title, body, notificationDetails, payload: 'item x');
 }
 
 void listenMessages() async {
+  if(await Permission.notification.isDenied)await Permission.notification.request();
   print('here');
   DatabaseReference db = await FirebaseDatabase.instance.ref();
   List<DataSnapshot> snaps = [];
@@ -538,22 +539,31 @@ void listenMessages() async {
       db
           .child('messages')
           .child(connections[i])
-          .orderByKey()
-          .limitToLast(1)
           .onChildAdded
           .listen((event) async {
         var n;
+        DatabaseReference dref = FirebaseDatabase.instance.ref();
+        String idval = '';
+        await dref
+            .child('messages')
+            .child(connections[i])
+            .orderByChild('createdAt')
+            .once()
+            .then((value) async{
+          idval = value.snapshot.children.last.child('auther').value.toString();
         n = await getName(map_coniv_name[connections[i]]);
-        print('${n} message ayach\n');
-        var idval =
-            event.snapshot.children.last.child('auther').value.toString();
+        print('${n} message ayach id :${connections[i]}\n');
+        print('last message:${event.snapshot.children..last}');
+
         if (idval != curuser.uid) {
           showNotification(
               title: n,
               body:
-                  event.snapshot.children.last.child('text').value.toString());
+                  value.snapshot.children.last.child('text').value.toString());
         }
         print(event.snapshot.children.last.value);
+        });
+        
 
         //h print(event.snapshot.value);
       });
