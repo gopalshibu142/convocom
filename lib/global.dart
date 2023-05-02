@@ -161,8 +161,14 @@ int themeno = 0;
 var curr_msgid = '';
 Map mapname_id = {};
 var convID;
-List people = [];
+List<PersonDetail> people = [];
 List profileUrls = [];
 bool islistadded = false;
 Map<String, String> map_coniv_name = {};
 String user_ID = '';
+
+class PersonDetail {
+  String name;
+  String profile;
+  PersonDetail(this.name,this.profile);
+}

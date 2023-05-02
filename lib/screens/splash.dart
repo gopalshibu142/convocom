@@ -11,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:convocom/firebasefn.dart';
 import 'package:convocom/firebasefn.dart';
+import 'package:flutter_background/flutter_background.dart';
 
 class SplashFuturePage extends StatefulWidget {
   SplashFuturePage({Key? key}) : super(key: key);
@@ -22,7 +23,8 @@ class SplashFuturePage extends StatefulWidget {
 class _SplashFuturePageState extends State<SplashFuturePage> {
   @override
   void initState() {
-    listenMessages();
+    //FlutterBackgroundAndroidConfig
+
     super.initState();
   }
 
@@ -39,7 +41,7 @@ class _SplashFuturePageState extends State<SplashFuturePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // var prefs =await  SharedPreferences.getInstance();
     themeno = prefs.containsKey('theme') ? prefs.getInt('theme') ?? 0 : 0;
-
+    await Future.delayed(Duration(seconds: 1));
     getTheme(themeno);
     signed = prefs.getBool('issignedin');
     if (signed == true) {
@@ -67,7 +69,8 @@ class _SplashFuturePageState extends State<SplashFuturePage> {
   @override
   Widget build(BuildContext context) {
     return EasySplashScreen(
-      logo: Image.asset('assets/CONVOCOM.png'),
+      
+      logo: Image.asset('assets/logoconvocom.png'),
       title: Text("CONVOCOM",
           style:
               GoogleFonts.permanentMarker(color: Colors.white, fontSize: 38)),

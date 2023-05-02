@@ -134,6 +134,7 @@ class UserDetails {
     } catch (e) {
       showSnack(e.toString(), context);
     }
+    listenMessages();
   }
 
   void signout(BuildContext context) async {
@@ -327,6 +328,7 @@ Future<void> getPeoplelist() async {
   for (int i = 0; i < peopleID.length; i++) {
     var element = peopleID[i].toString();
     //print(element);
+    var name, url;
 
     await databaseReference
         .child('users')
@@ -335,7 +337,7 @@ Future<void> getPeoplelist() async {
         .once()
         .then((value) {
       // print(value.snapshot.value);
-      people.add(value.snapshot.value);
+      name = value.snapshot.value.toString();
       mapname_id.addAll({value.snapshot.value: element});
     });
     await databaseReference
@@ -345,10 +347,11 @@ Future<void> getPeoplelist() async {
         .once()
         .then((value) {
       // print(value.snapshot.value);
-      profileUrls.add(value.snapshot.value);
+      url = value.snapshot.value.toString();
 
       //mapname_id.addAll({value.snapshot.value: element});
     });
+    people.add(PersonDetail(name, url));
     //print(mapname_id);
   }
   // print(profile);
@@ -482,7 +485,7 @@ void initLocalNotification() async {
 //  print('init');
   // configure the settings of the plugin
   var initializationSettingsAndroid =
-      AndroidInitializationSettings('mipmap/launcher_icon');
+      AndroidInitializationSettings('@mipmap/launcher_icon');
   var initializationSettingsIOS = DarwinInitializationSettings();
   var initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
@@ -509,11 +512,13 @@ Future<void> showNotification(
 }
 
 void listenMessages() async {
-  if(await Permission.notification.isDenied)await Permission.notification.request();
-  print('here');
+  if (await Permission.notification.isDenied)
+    await Permission.notification.request();
+  // print('here');
   DatabaseReference db = await FirebaseDatabase.instance.ref();
   List<DataSnapshot> snaps = [];
   List<String> connections = [];
+  await db.once();
   String id = '';
   await db
       .child('connections')
@@ -536,11 +541,8 @@ void listenMessages() async {
         : 'null';
     var name = await getName(id);
     if (name != 'null') {
-      db
-          .child('messages')
-          .child(connections[i])
-          .onChildAdded
-          .listen((event) async {
+      //db..child('messages').child(connections[i]).once().then((value) => null);
+      db.child('messages').child(connections[i]).onValue.listen((event) async {
         var n;
         DatabaseReference dref = FirebaseDatabase.instance.ref();
         String idval = '';
@@ -549,21 +551,23 @@ void listenMessages() async {
             .child(connections[i])
             .orderByChild('createdAt')
             .once()
-            .then((value) async{
+            .then((value) async {
           idval = value.snapshot.children.last.child('auther').value.toString();
-        n = await getName(map_coniv_name[connections[i]]);
-        print('${n} message ayach id :${connections[i]}\n');
-        print('last message:${event.snapshot.children..last}');
+          n = await getName(map_coniv_name[connections[i]]);
+          //  print('${n} ${event.snapshot.children.last.value.toString()}\n');
+          //print('last message:${value.snapshot.children.last.key.toString()}');
 
-        if (idval != curuser.uid) {
-          showNotification(
-              title: n,
-              body:
-                  value.snapshot.children.last.child('text').value.toString());
-        }
-        print(event.snapshot.children.last.value);
+          if (idval != curuser.uid) {
+            showNotification(
+                title: n,
+                body: value.snapshot.children.last
+                    .child('text')
+                    .value
+                    .toString());
+          }
+
+          /// print(event.snapshot.children.last.value);
         });
-        
 
         //h print(event.snapshot.value);
       });

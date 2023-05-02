@@ -70,6 +70,7 @@ dependencies:
   firebase_messaging: ^14.4.1
   firebase_analytics: ^10.2.1
   flutter_local_notifications: ^14.0.0+1
+  flutter_background: ^1.2.0
   # firebase_messaging: ^14.1.1
  # firebase_messaging: ^14.1.1
 
@@ -86,16 +87,16 @@ dev_dependencies:
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/CONVOCOM1.png"
+  image_path: "assets/logoconvocom.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
   web:
     generate: true
-    image_path: "assets/CONVOCOM1.png"
+    image_path: "assets/logoconvocom.png"
     background_color: "#hexcode"
     theme_color: "#hexcode"
   windows:
     generate: true
-    image_path: "assets/CONVOCOM1.png"
+    image_path: "assets/logoconvocom.png"
     icon_size: 48 # min:48, max:256, default: 48
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -40,6 +40,7 @@ class _HomeState extends State<Home> {
   late List<Widget> _widgetOptions;
   late PageController pagecontroller;
   var temp = 50.0;
+  List<PersonDetail> searchList = [];
   //UIColor theme = UIColor();
   int _selectedIndex = 0;
   @override
@@ -54,7 +55,6 @@ class _HomeState extends State<Home> {
     url = await getProfileUrl(userId: curuser.uid);
     pref = await SharedPreferences.getInstance();
     setState(() {});
-    
   }
 
   void initState() {
@@ -68,8 +68,9 @@ class _HomeState extends State<Home> {
   }
 
   void showThemeSelect() {
-    showNotification(title: 'title', body: 'ok');
+    //showNotification(title: 'title', body: 'ok');
     showDialog<String>(
+  
       context: context,
       builder: (BuildContext context) => SimpleDialog(
         backgroundColor: theme.lvl2,
@@ -172,6 +173,7 @@ class _HomeState extends State<Home> {
                   suffix: IconButton(
                       onPressed: () async {
                         await addConncetion(txt.text.trim(), ctx);
+                        getPeoplelist();
                         setState(() {});
                       },
                       icon: Icon(Icons.search)))),
@@ -187,6 +189,7 @@ class _HomeState extends State<Home> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late File _imageFile;
+  bool showsearch = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -217,6 +220,34 @@ class _HomeState extends State<Home> {
                   ),
           ),
           actions: [
+            !showsearch
+                ? IconButton(
+                    onPressed: () {
+                      // showSearch(context: context, delegate: delegate)
+                      setState(() {
+                        showsearch = true;
+                      });
+                    },
+                    icon: Icon(Icons.search))
+                : Container(
+                    width: 200,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search..',
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                showsearch = false;
+                              });
+                            },
+                            icon: Icon(Icons.close)),
+                      ),
+                      onChanged: (str) {searchList = people.where((person) => person.name.toLowerCase().contains(str.toLowerCase())).toList();
+                      setState(() {
+                        
+                      });},
+                    ),
+                  ),
             IconButton(
                 onPressed: () {
                   showThemeSelect();
@@ -271,109 +302,114 @@ class _HomeState extends State<Home> {
         ));
   }
 
-  Container home() => Container(
-      color: Color(0xff000000),
-      height: double.infinity,
-      child: islistadded
-          ?
-          // List<List> list = snapshot.data??[];
+  Container home() {
+    List<PersonDetail> listBuild = searchList.isEmpty ? people : searchList;
+    return Container(
+        color: Color(0xff000000),
+        height: double.infinity,
+        child: islistadded
+            ?
+            // List<List> list = snapshot.data??[];
 
-          ListView.builder(
-              itemCount: people.length,
-              itemBuilder: (BuildContext context, int index) {
-                // access element from list using index
-                // you can create and return a widget of your choice
-                return AnimationConfiguration.staggeredList(
-                  position: index,
-                  delay: Duration(milliseconds: 100),
-                  child: SlideAnimation(
-                    duration: Duration(milliseconds: 2500),
-                    verticalOffset: -250,
-                    curve: Curves.fastLinearToSlowEaseIn,
-                    child: ScaleAnimation(
-                      duration: Duration(milliseconds: 1500),
+            ListView.builder(
+                itemCount: listBuild.length,
+                itemBuilder: (BuildContext context, int index) {
+                  // access element from list using index
+                  // you can create and return a widget of your choice
+                  return AnimationConfiguration.staggeredList(
+                    position: index,
+                    delay: Duration(milliseconds: 100),
+                    child: SlideAnimation(
+                      duration: Duration(milliseconds: 2500),
+                      verticalOffset: -250,
                       curve: Curves.fastLinearToSlowEaseIn,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(25)),
-                              color: theme.lvl0,
-                              //color: Color(0xff03001C),
+                      child: ScaleAnimation(
+                        duration: Duration(milliseconds: 1500),
+                        curve: Curves.fastLinearToSlowEaseIn,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 10,
                             ),
-                            alignment: Alignment.center,
-                            height: 100,
-                            width: double.infinity,
-                            child: ListTile(
-                              leading: GestureDetector(
-                                onTap: () => showProfileAlert(
-                                    showprofile(profileUrls[index]),
-                                    people[index]),
-                                child: CircleAvatar(
-                                  radius: 50,
-                                  backgroundColor: theme.lvl1,
-
-                                  //backgroundImage: showprofile(profileUrls[index]),
-                                  child: Container(
-                                      height: 51,
-                                      width: 51,
-                                      decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: showprofile(
-                                                  profileUrls[index])),
-                                          borderRadius:
-                                              BorderRadius.circular(50))),
-                                ),
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(25)),
+                                color: theme.lvl0,
+                                //color: Color(0xff03001C),
                               ),
-                              title: Text(people[index]),
-                              onTap: () async {
-                                var messages = await getMessage(people[index]);
-                                convID = await getConvId(people[index]);
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ChatContainer(
-                                            name: people[index],
-                                            messages: messages,
-                                          )),
-                                );
-                              },
+                              alignment: Alignment.center,
+                              height: 100,
+                              width: double.infinity,
+                              child: ListTile(
+                                leading: GestureDetector(
+                                  onTap: () => showProfileAlert(
+                                      showprofile(listBuild[index].profile),
+                                      listBuild[index].name),
+                                  child: CircleAvatar(
+                                    radius: 50,
+                                    backgroundColor: theme.lvl1,
+
+                                    //backgroundImage: showprofile(profileUrls[index]),
+                                    child: Container(
+                                        height: 51,
+                                        width: 51,
+                                        decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: showprofile(
+                                                    listBuild[index].profile)),
+                                            borderRadius:
+                                                BorderRadius.circular(50))),
+                                  ),
+                                ),
+                                title: Text(listBuild[index].name),
+                                onTap: () async {
+                                  var messages =
+                                      await getMessage(listBuild[index].name);
+                                  convID =
+                                      await getConvId(listBuild[index].name);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChatContainer(
+                                              name: listBuild[index].name,
+                                              messages: messages,
+                                            )),
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              })
-          : SizedBox(
-              width: 200.0,
-              height: 100.0,
-              child: Shimmer.fromColors(
-                baseColor: Color.fromARGB(255, 48, 45, 45),
-                highlightColor: Color.fromARGB(255, 0, 0, 0),
-                child: ListView(
-                  children: [
-                    for (int i = 0; i <= 10; i++)
-                      Container(
-                        height: 100,
-                        alignment: Alignment.center,
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            maxRadius: 50,
+                  );
+                })
+            : SizedBox(
+                width: 200.0,
+                height: 100.0,
+                child: Shimmer.fromColors(
+                  baseColor: Color.fromARGB(255, 48, 45, 45),
+                  highlightColor: Color.fromARGB(255, 0, 0, 0),
+                  child: ListView(
+                    children: [
+                      for (int i = 0; i <= 10; i++)
+                        Container(
+                          height: 100,
+                          alignment: Alignment.center,
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              maxRadius: 50,
+                            ),
+                            title: Text('username'),
                           ),
-                          title: Text('username'),
-                        ),
-                      )
-                  ],
+                        )
+                    ],
+                  ),
                 ),
-              ),
-            ));
+              ));
+  }
 
   Container community() => Container(
         height: double.infinity,
