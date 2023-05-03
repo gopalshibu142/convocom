@@ -99,7 +99,8 @@ class UserDetails {
   Future signInWithEmailAndPassword(
       {required email, required password, required context}) async {
     try {
-      QuickAlert.show(context: context, type: QuickAlertType.loading);
+     QuickAlert.show(context: context, type: QuickAlertType.loading,
+     );
 
       final User? user = (await auth.signInWithEmailAndPassword(
         email: email,

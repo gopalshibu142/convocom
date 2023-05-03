@@ -79,6 +79,7 @@ class _SplashFuturePageState extends State<SplashFuturePage> {
       loadingText: Text("Loading..."),
       futureNavigator: futureCallLogin(),
       durationInSeconds: 2,
+      loaderColor: Colors.red,
     );
   }
 }

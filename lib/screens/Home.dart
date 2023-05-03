@@ -70,7 +70,6 @@ class _HomeState extends State<Home> {
   void showThemeSelect() {
     //showNotification(title: 'title', body: 'ok');
     showDialog<String>(
-  
       context: context,
       builder: (BuildContext context) => SimpleDialog(
         backgroundColor: theme.lvl2,
@@ -187,6 +186,7 @@ class _HomeState extends State<Home> {
     );
   }
 
+  var title = 'Convocom';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late File _imageFile;
   bool showsearch = false;
@@ -196,7 +196,7 @@ class _HomeState extends State<Home> {
         key: this._scaffoldKey,
         appBar: AppBar(
           title: Text(
-            'Convocom',
+            title,
             style: GoogleFonts.roboto(),
           ),
           backgroundColor: theme.lvl1,
@@ -226,6 +226,7 @@ class _HomeState extends State<Home> {
                       // showSearch(context: context, delegate: delegate)
                       setState(() {
                         showsearch = true;
+                        title = '';
                       });
                     },
                     icon: Icon(Icons.search))
@@ -238,14 +239,20 @@ class _HomeState extends State<Home> {
                             onPressed: () {
                               setState(() {
                                 showsearch = false;
+                                searchList = [];
+                                title='Convocom';
                               });
                             },
                             icon: Icon(Icons.close)),
                       ),
-                      onChanged: (str) {searchList = people.where((person) => person.name.toLowerCase().contains(str.toLowerCase())).toList();
-                      setState(() {
-                        
-                      });},
+                      onChanged: (str) {
+                        searchList = people
+                            .where((person) => person.name
+                                .toLowerCase()
+                                .contains(str.toLowerCase()))
+                            .toList();
+                        setState(() {});
+                      },
                     ),
                   ),
             IconButton(
@@ -320,11 +327,11 @@ class _HomeState extends State<Home> {
                     position: index,
                     delay: Duration(milliseconds: 100),
                     child: SlideAnimation(
-                      duration: Duration(milliseconds: 2500),
+                      duration: Duration(milliseconds: 1000),
                       verticalOffset: -250,
                       curve: Curves.fastLinearToSlowEaseIn,
                       child: ScaleAnimation(
-                        duration: Duration(milliseconds: 1500),
+                        duration: Duration(milliseconds: 500),
                         curve: Curves.fastLinearToSlowEaseIn,
                         child: Column(
                           children: [
