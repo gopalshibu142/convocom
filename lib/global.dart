@@ -70,6 +70,13 @@ class UIColor {
     lvl2 = Color(0xff395b2d);
     lvl3 = Color(0xff627653);
   }
+
+  void weirdColors() {
+    lvl0 = Color(0xffA24936);
+    lvl1 = Color(0xffD36135);
+    lvl2 = Color(0xff83BCA9);
+    lvl3 = Color(0xff282B28);
+  }
 }
 
 class LoginDetails {
@@ -151,6 +158,9 @@ void getTheme(int n) {
     case 3:
       theme.nature();
       break;
+    case 4:
+      theme.weirdColors();
+      break;
     default:
       theme.defaulttheme();
   }
@@ -170,5 +180,5 @@ String user_ID = '';
 class PersonDetail {
   String name;
   String profile;
-  PersonDetail(this.name,this.profile);
+  PersonDetail(this.name, this.profile);
 }

@@ -6,17 +6,18 @@ import 'package:convocom/global.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class ChatContainer extends StatefulWidget {
-  var name, messages;
-  ChatContainer({super.key, required this.name, required this.messages});
+  var messages;
+  PersonDetail person;
+  ChatContainer({super.key, required this.person, required this.messages});
 
   @override
   State<ChatContainer> createState() =>
-      _ChatContainerState(this.name, this.messages);
+      _ChatContainerState(this.person, this.messages);
 }
 
 class _ChatContainerState extends State<ChatContainer> {
-  var name;
-  _ChatContainerState(this.name, this._messages);
+  PersonDetail person;
+  _ChatContainerState(this.person, this._messages);
   late DatabaseReference dbref;
   void init() {
     dbref.child('connections').child(convID).set('inactive');
@@ -27,10 +28,10 @@ class _ChatContainerState extends State<ChatContainer> {
     //theme.defaulttheme();
     dbref = FirebaseDatabase.instance.ref();
     dbref.child('messages').child(convID).onValue.listen((event) async {
-      _messages = await getMessage(name);
+      _messages = await getMessage(person.name);
       setState(() {
         //print(event.snapshot.value);
-       // print('object');
+        // print('object');
       });
     });
     init();
@@ -51,11 +52,14 @@ class _ChatContainerState extends State<ChatContainer> {
       },
       child: Scaffold(
         appBar: AppBar(
+          leadingWidth: 49,
+          leading: CircleAvatar(
+            foregroundImage: Image.network(person.profile).image,
+          ),
           backgroundColor: theme.lvl1,
-          title: Text(name),
+          title: Text(person.name),
         ),
         body: Chat(
-
           theme: DarkChatTheme(
               backgroundColor: theme.lvl0,
               primaryColor: theme.lvl2,
@@ -84,7 +88,7 @@ class _ChatContainerState extends State<ChatContainer> {
     );
 
     //print(DateTime.now().toString().replaceAll(':', '').replaceAll('.', '').replaceAll('-', '').replaceAll(' '', ''));
-    addMessagetoDB(textMessage, name);
+    addMessagetoDB(textMessage, person.name);
     _addMessage(textMessage);
   }
 
