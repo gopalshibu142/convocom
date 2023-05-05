@@ -99,8 +99,10 @@ class UserDetails {
   Future signInWithEmailAndPassword(
       {required email, required password, required context}) async {
     try {
-     QuickAlert.show(context: context, type: QuickAlertType.loading,
-     );
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.loading,
+      );
 
       final User? user = (await auth.signInWithEmailAndPassword(
         email: email,
@@ -374,6 +376,14 @@ Future<String> getConvId(name) async {
     conId = value.snapshot.value;
   });
   return conId;
+}
+
+void deleteMessage(String mid, name) async {
+  //print("object");
+  var conId = await getConvId(name);
+  databaseReference.child('messages').child(conId).child('mid').remove(
+
+  );
 }
 
 void addMessagetoDB(types.TextMessage message, name) async {

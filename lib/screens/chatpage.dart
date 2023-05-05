@@ -4,6 +4,7 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:convocom/firebasefn.dart';
 import 'package:convocom/global.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:quickalert/quickalert.dart';
 
 class ChatContainer extends StatefulWidget {
   var messages;
@@ -60,6 +61,21 @@ class _ChatContainerState extends State<ChatContainer> {
           title: Text(person.name),
         ),
         body: Chat(
+          onMessageLongPress: (context, p1) {
+            var b = QuickAlert.show(
+              context: context,
+              type: QuickAlertType.confirm,
+              title: 'do you want to delete this message',
+              cancelBtnText: 'no',
+              confirmBtnText: 'yes',
+              onConfirmBtnTap: () {
+                _messages.remove(p1);
+                deleteMessage(p1.id, person.name);
+                setState(() {});
+                Navigator.pop(context);
+              },
+            );
+          },
           theme: DarkChatTheme(
               backgroundColor: theme.lvl0,
               primaryColor: theme.lvl2,
